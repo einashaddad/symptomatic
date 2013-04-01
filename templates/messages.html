@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<h3>Messages:</h3>
+{% if message %}
+
+<h4>From {{ sender }} with subject: {{ subject }}</h4>
+{{ message }}
+
+{% else %}
+<h4>No messages</h4>
+
+{% endif %}
+{% endblock %}
