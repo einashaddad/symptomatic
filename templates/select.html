@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<form name="input" action="/show_symptoms" method="post">
+	email: <input type="text" name="email"/><br><br>
+
+	For specific dates:<br>
+	start date: <input type="date" name="start_date"/> end date: <input type="date" name="end_date"/>
+	<input type="submit" name="Submit"/>
+	<br><br>
+	For all symptoms:<br>
+	<input type="submit"  value="Find All" name="Find All"/>
+</form>
+
+{% endblock %}

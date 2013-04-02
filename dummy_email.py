@@ -1,11 +1,13 @@
+#! /usr/bin/env python
+
 import requests
 import pdb
 import time
 
-data = {'sender': 'einas@isthebest.com', 
+data = {'sender': 'einas.haddad@email.com', 
 		'recipient': 'symtomatic@symtomatic.mailgun.org',
-		'subject': 'testing',
-		'body-plain': 'symptom1\nsymptom2\nsymptom3\nsymptom4',
+		'subject': 'test',
+		'body-plain': 'slurring\nmigrane\nnumbness',
 		'timestamp': str(int(time.time())),		
 		}
 

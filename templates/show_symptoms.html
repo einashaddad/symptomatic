@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% block body %}
+
+{% if start_date and end_date %}
+<h3>Your symptoms between {{ start_date }} and {{ end_date }}:</h3>
+{% endif %}
+
+{% if symptoms %}
+<ul class=entries>
+{% for symptom in symptoms %}
+	<li><h4>{{ symptom }}</h4>
+{% endfor %}
+</u1>
+{% endif %}
+{% endblock %}
