@@ -11,8 +11,8 @@ data = {'sender': 'einas.haddad@email.com',
 		'timestamp': str(int(time.time())),		
 		}
 
-#r = requests.post('http://shrouded-tundra-4968.herokuapp.com/messages', data=data)
-r = requests.post('http://localhost:35779/messages', data=data)
+r = requests.post('http://shrouded-tundra-4968.herokuapp.com/messages', data=data)
+#r = requests.post('http://localhost:35779/messages', data=data)
 
 assert r.status_code == 200
 

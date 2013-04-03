@@ -1,2 +1,4 @@
 /symptomize
 *.pyc
+sendmail.py
+getmail.py

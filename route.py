@@ -1,16 +1,56 @@
 #! /usr/bin/env python
 
-from flask import Flask, render_template, request, url_for
+from flask import Flask, render_template, request, url_for, redirect, session
+from flask_oauth import OAuth
 import os
-#import httplib
 import mongo
 import datetime
 
 app = Flask(__name__) 
 
+app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
+
+oauth = OAuth()
+facebook = oauth.remote_app('facebook',
+    base_url='https://graph.facebook.com/',
+    request_token_url=None,
+    access_token_url='/oauth/access_token',
+    authorize_url='https://www.facebook.com/dialog/oauth',
+    consumer_key="109598425902918",
+    consumer_secret="21599ff47fc62fcbee95a5b3453f5a63",
+    request_token_params={'scope': 'email'}
+)
+
+
+@facebook.tokengetter
+def get_facebook_token(token=None):
+	return session.get('facebook_token')
+
+@app.route('/oauth-authorized')
+@facebook.authorized_handler
+def oauth_authorized(resp):
+    next_url = request.args.get('next') or url_for('index')
+    if resp is None:
+        flash(u'You denied the request to sign in.')
+        return redirect(next_url)
+
+    session['facebook_token'] = (
+        resp['oauth_token'],
+        resp['oauth_token_secret']
+    )
+    session['facebook_user'] = resp['screen_name']
+
+    flash('You were signed in as %s' % resp['screen_name'])
+    return redirect('/show_symptoms')
+
 @app.route('/')
 def index():
-	return render_template('index.html')
+	return redirect(url_for('login'))
+
+@app.route('/login')
+def login():
+    return facebook.authorize(callback=url_for('oauth_authorized',
+        next=request.args.get('next') or request.referrer or None))
 
 # Handler for HTTP POST to http://symptomatic.me/messages
 @app.route('/messages', methods=['GET', 'POST'])
@@ -59,5 +99,5 @@ def show_symptoms():
 
 
 if __name__ == '__main__':
-	port = int(os.environ.get('PORT', 35779))
-	app.run(debug=True, host='0.0.0.0', port=port)
+	#port = int(os.environ.get('PORT', 5000))
+	app.run(debug=True)#, host='0.0.0.0', port=port)
