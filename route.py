@@ -34,24 +34,23 @@ def oauth_authorized(resp):
         flash(u'You denied the request to sign in.')
         return redirect(next_url)
 
-    session['facebook_token'] = (
-        resp['oauth_token'],
-        resp['oauth_token_secret']
-    )
-    session['facebook_user'] = resp['screen_name']
+    session['facebook_token'] = (resp['access_token'], '')
+    me = facebook.get('/me')
+    print resp
+    print me
+    import pdb
+    pdb.set_trace()
 
-    flash('You were signed in as %s' % resp['screen_name'])
-    return redirect('/show_symptoms')
+    return redirect('show_symptoms')
 
 @app.route('/')
 def index():
 	return redirect(url_for('login'))
-
 @app.route('/login')
 def login():
     return facebook.authorize(callback=url_for('oauth_authorized',
-        next=request.args.get('next') or request.referrer or None))
-
+        next=request.args.get('next') or request.referrer or None,
+        _external=True))
 # Handler for HTTP POST to http://symptomatic.me/messages
 @app.route('/messages', methods=['GET', 'POST'])
 def on_incoming_message():
@@ -99,5 +98,7 @@ def show_symptoms():
 
 
 if __name__ == '__main__':
-	#port = int(os.environ.get('PORT', 5000))
-	app.run(debug=True)#, host='0.0.0.0', port=port)
+	port = int(os.environ.get('PORT', 5000))
+	app.run(debug=True, host='0.0.0.0', port=5000)
+
+
