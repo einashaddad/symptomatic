@@ -2,11 +2,11 @@
 import requests
 from werkzeug.datastructures import MultiDict
 
-user_name = "api"
-api_key = "key-3b36qwxrjcphvtavdiskcmwjq2issg92"
+user_name = os.environ.get('MAILGUN_USERNAME')
+api_key = os.environ.get('MAILGUN_APIKEY')
 
-login = "postmaster@symptomatic.mailgun.org"
-password = "0hgnsoknpcd1"
+login = os.environ.get('MAILGUN_LOGIN')
+password = os.environ.get('MAILGUN_PASSWORD')
 
 def create_route():
 	return requests.post(

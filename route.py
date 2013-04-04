@@ -8,7 +8,7 @@ import datetime
 
 app = Flask(__name__) 
 
-app.secret_key = '/\x08\xb7dIS\x04}mb<\xb8\xd9\x9fNm9\xd4\xf6\xb2}\x98SY'
+app.secret_key = os.environ.get('API_SECRET_KEY')
 
 oauth = OAuth()
 
@@ -17,8 +17,8 @@ facebook = oauth.remote_app('facebook',
     request_token_url=None,
     access_token_url='/oauth/access_token',
     authorize_url='https://www.facebook.com/dialog/oauth',
-    consumer_key='109598425902918',
-    consumer_secret='21599ff47fc62fcbee95a5b3453f5a63',
+    consumer_key= os.environ.get('CONSUMER_KEY'),
+    consumer_secret=os.environ.get('CONSUMER_SECRET'),
     request_token_params={'scope': ('email, ')}
 )
 

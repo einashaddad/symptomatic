@@ -2,12 +2,13 @@
 
 import requests
 import smtplib
+import os
 
-user_name = "api"
-api_key = "key-3b36qwxrjcphvtavdiskcmwjq2issg92"
+user_name = os.environ.get('MAILGUN_USERNAME')
+api_key = os.environ.get('MAILGUN_APIKEY')
 
-login = "postmaster@symptomatic.mailgun.org"
-password = "0hgnsoknpcd1"
+login = os.environ.get('MAILGUN_LOGIN')
+password = os.environ.get('MAILGUN_PASSWORD')
 
 s = requests.Session()
 s.auth = user_name, api_key 
@@ -21,6 +22,3 @@ def send_simple_message():
 				"to": ["einas.haddad@gmail.com"],
 				"subject": "How are you feeling today?",
 				"html": "<html><h3>Please take a minute to write out any symptoms you are feeling today.</h3></html>"})
-
-# if __name__ == '__main__':
-# 	send_simple_message()
