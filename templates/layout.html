@@ -1,7 +1,16 @@
 <!doctype html>
 <html lang="en">
 <title>Symptomatic</title>
+
 <div class=page>
 	<h1>Symptomatic</h1>
 	{% block body %}{% endblock %}
+</div>
+
+<div class="nav pull-right">
+{% if not session.logged_in %}
+<a href="/login">Login or Signup</a>
+{% else %}
+<a href="/logout">Logout</a>
+{% endif %}
 </div>
