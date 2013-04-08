@@ -52,12 +52,30 @@ def oauth_authorized(resp):
     session['facebook_token'] = (resp['access_token'], '')
     
     data = facebook.get('/me').data
-    email = data['email']
-    session['username'] = email
+    fb_email = data['email']
 
-    #flash('You were signed in as %s' % resp['screen_name'])
+    found, email = mongo.check_user(fb_email)
+
+    session['email'] = email
+    if not found:	
+    	return redirect('/sign_up')
 
     return redirect('/show_symptoms')
+
+@app.route('/sign_up', methods=['GET', 'POST'])
+def sign_up():
+	if request.method == 'GET':
+		return render_template('sign_up.html')
+	else:
+		first_name = request.form.get('first_name')
+		last_name = request.form.get('last_name')
+		fb_email = request.form.get('fb_email')
+		email = request.form.get('email')
+		birthday = request.form.get('birthday')
+
+		mongo.add_user(first_name, last_name, fb_email, email, birthday)
+
+		return redirect('/show_symptoms')
 
 @app.route('/logout')
 def logout():
@@ -81,11 +99,12 @@ def on_incoming_message():
 @app.route('/show_symptoms', methods=['GET', 'POST'])
 def show_symptoms():
 	if request.method == 'GET':
+		if not session.get('logged_in'):
+			return redirect(url_for('index'))
 		return render_template('select.html')
 
 	if request.form.get('Submit'):
-		email = request.form.get('email')
-		
+		email = session['email']
 		start_date = request.form.get('start_date')
 		end_date = request.form.get('end_date')
 
@@ -101,7 +120,7 @@ def show_symptoms():
 		return render_template('show_symptoms.html', start_date=start_date, end_date=end_date, symptoms=symptoms)
 	
 	elif request.form.get("Find All"):
-		email = request.form.get('email')
+		email = session['email']
 		if not email:
 			return render_template('select.html')
 

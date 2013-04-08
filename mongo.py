@@ -33,7 +33,9 @@ def reading_email(sender=None, start_date=None, end_date=None, find_all=False):
 	email = db.email 
 	result = []
 	if sender and start_date and end_date:
-			for message in email.find( { "sender" : sender, "date" : { "$gte" : start_date, "$lt" : end_date } } ):
+			for message in email.find( { "sender" : sender, 
+										 "date" : { "$gte" : start_date, 
+										 "$lt" : end_date } } ):
 				for symptom in message['symptoms']:
 					result.append(symptom)
 	elif find_all:
@@ -42,4 +44,30 @@ def reading_email(sender=None, start_date=None, end_date=None, find_all=False):
 				result.append(symptom)
 
 	return set(result)
+
+def check_user(email):
+	user = db.user
+
+	user_found = user.find_one( { "fb_email": email } )
+
+	if user_found:
+		return True, user_found['email'] 	# True when user is found
+	return False, None		# False when user is new
+
+def add_user(first_name, last_name, fb_email, email, birthday):
+
+	user = db.user
+
+	save_user = { "first_name": first_name, 
+				  "last_name": last_name, 
+				  "fb_email": fb_email, 
+				  "email" : email, 
+				  "birthday" : birthday,
+				}
+
+	try:
+		user.insert(save_user)
+	except:
+		print "insert failed:", sys.exec_info()[0]
+
 		
