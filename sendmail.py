@@ -15,6 +15,9 @@ s.auth = user_name, api_key
 
 
 def send_simple_message():
+	"""
+	Sends a an email using the mailgun API
+	"""
 	return requests.post(
 		"https://api.mailgun.net/v2/symptomatic.mailgun.org/messages",
 		auth=(user_name, api_key),

@@ -4,6 +4,10 @@ import requests
 import pdb
 import time
 
+"""
+This sends a dummy email to the app
+"""
+
 data = {'sender': 'einas.haddad@gmail.com', 
 		'recipient': 'symtomatic@symtomatic.mailgun.org',
 		'subject': 'test',

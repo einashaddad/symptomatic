@@ -16,7 +16,9 @@ else:
   db = connection.test
 
 def saving_email(timestamp, sender, list_of_symptoms, body_plain):
-
+	"""
+	Saves the symptoms along with the timestamp, sender and email in mongodb
+	"""
 	email = db.email
 
 	date = datetime.datetime.fromtimestamp(int(timestamp))	#converts timestamp into datetime type
@@ -30,6 +32,12 @@ def saving_email(timestamp, sender, list_of_symptoms, body_plain):
 		print "insert failed:", sys.exec_info()[0]
 
 def reading_email(sender=None, start_date=None, end_date=None, find_all=False):
+	"""
+	Returns the symptoms from mongodb
+
+	Finds the entry according to the sender (the person logged in), 
+	the start date and the end date
+	"""
 	email = db.email 
 	result = []
 	if sender and start_date and end_date:
@@ -46,6 +54,9 @@ def reading_email(sender=None, start_date=None, end_date=None, find_all=False):
 	return set(result)
 
 def check_user(email):
+	"""
+	Returns True and the email when the user is found or False when the user is a new user
+	"""
 	user = db.user
 
 	user_found = user.find_one( { "fb_email": email } )
@@ -55,7 +66,9 @@ def check_user(email):
 	return False, None		# False when user is new
 
 def add_user(first_name, last_name, fb_email, email, birthday):
-
+	"""
+	Adds a new user in mongodb 
+	"""
 	user = db.user
 
 	save_user = { "first_name": first_name, 
