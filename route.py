@@ -22,13 +22,13 @@ facebook = oauth.remote_app('facebook',
     request_token_params={'scope': ('email, ')}
 )
 
-@app.route('/')
-def index():
-	return render_template('index.html')
-
 @facebook.tokengetter
 def get_facebook_token(token=None):
 	return session.get('facebook_token')
+
+@app.route('/')
+def index():
+	return render_template('index.html')
 
 def pop_login_session():
 	session.pop('logged_in', None)
@@ -44,7 +44,7 @@ def login():
 @app.route('/oauth-authorized')
 @facebook.authorized_handler
 def oauth_authorized(resp):
-    next_url = request.args.get('next') or url_for('/show_symptoms')
+    next_url = request.args.get('next') or url_for('/find_symptoms')
     if resp is None or 'access_token' not in resp:
         return redirect('/')
 
@@ -60,7 +60,7 @@ def oauth_authorized(resp):
     if not found:	
     	return redirect('/sign_up')
 
-    return redirect('/show_symptoms')
+    return redirect('/find_symptoms')
 
 @app.route('/sign_up', methods=['GET', 'POST'])
 def sign_up():
@@ -75,38 +75,38 @@ def sign_up():
 
 		mongo.add_user(first_name, last_name, fb_email, email, birthday)
 
-		return redirect('/show_symptoms')
+		return redirect('/find_symptoms')
 
 @app.route('/logout')
 def logout():
 	pop_login_session()
 	return redirect(url_for('index')) #request.referrer or 
 
-@app.route('/messages', methods=['GET', 'POST'])
+@app.route('/messages', methods=['POST'])
 def on_incoming_message():
 	# Handler for HTTP POST to http://symptomatic.me/messages
-	if request.method == 'POST':
-		sender = request.form.get('sender')
-		recipient = request.form.get('recipient')
+	sender = request.form.get('sender')
+	recipient = request.form.get('recipient')
 
-		body_plain = request.form.get('body-plain', '')
-		timestamp = request.form.get('timestamp', '')
+	body_plain = request.form.get('body-plain', '')
+	timestamp = request.form.get('timestamp', '')
 
-		mongo.saving_email(timestamp, sender, body_plain.splitlines(), body_plain)
+	mongo.saving_email(timestamp, sender, body_plain.splitlines(), body_plain)
 
-		return "OK"
+	return "OK"
 		
-@app.route('/show_symptoms', methods=['GET', 'POST'])
-def show_symptoms():
-	if request.method == 'GET':
-		if not session.get('logged_in'):
-			return redirect(url_for('index'))
-		return render_template('select.html')
+@app.route('/find_symptoms')
+def find_symptoms():
+	if not session.get('logged_in'):
+		return redirect(url_for('index'))
+	return render_template('select.html')
 
-	if request.form.get('Submit'):
+@app.route('/show_symptoms')
+def show_symptoms():
+	if request.args.get('Submit'):
 		email = session['email']
-		start_date = request.form.get('start_date')
-		end_date = request.form.get('end_date')
+		start_date = request.args.get('start_date')
+		end_date = request.args.get('end_date')
 
 		if not start_date and end_date and email:
 			return render_template('select.html')
@@ -119,7 +119,7 @@ def show_symptoms():
 		symptoms = mongo.reading_email(email, start_datetime, end_datetime + datetime.timedelta(1))
 		return render_template('show_symptoms.html', start_date=start_date, end_date=end_date, symptoms=symptoms)
 	
-	elif request.form.get("Find All"):
+	elif request.args.get("Find All"):
 		email = session['email']
 		if not email:
 			return render_template('select.html')
