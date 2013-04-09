@@ -66,19 +66,29 @@ def oauth_authorized(resp):
 def sign_up():
     if request.method == 'GET':
         return render_template('sign_up.html')
-    else:
-
+    elif request.method == 'POST':
         first_name = request.form.get('first_name')
         last_name = request.form.get('last_name')
         fb_email = request.form.get('fb_email')
         email = request.form.get('email')
         birthday = request.form.get('birthday')
 
-        u = User.validate(first_name=first_name, last_name=last_name, fb_email=fb_email,email=email, birthday=birthday)
-        
-        mongo.add_user(u)
+        if not first_name or not last_name or not fb_email or not email or not birthday:
+            flash(u'Please fill out all required fields', 'error')
+            return render_template('sign_up.html')
 
-        return redirect('/find_symptoms')
+        u = User.validate(first_name=first_name, last_name=last_name, fb_email=fb_email,email=email, birthday=birthday)
+
+        if not mongo.check_user(u.fb_email):        
+            mongo.add_user(u)
+            flash('Welcome %s, thanks for signing up!' % (first_name))
+            return redirect('/find_symptoms')
+        else:
+            flash('%s, we see you have already signed up!' % (first_name))
+            return redirect('/')
+
+    else:
+        return render_template('404.html'), 404
 
 @app.route('/logout')
 def logout():
@@ -115,9 +125,8 @@ def messages():
 
 @app.route('/find_symptoms')
 def find_symptoms():
-    print session
     if not session.get('logged_in'):
-        return redirect('/')
+        return redirect('/login')
     return render_template('select.html')
 
 @app.route('/show_symptoms')
@@ -127,30 +136,33 @@ def show_symptoms():
         start_date = request.args.get('start_date')
         end_date = request.args.get('end_date')
 
-        if not start_date and end_date and email:
+        if not start_date or not end_date or not email:
+            flash(u'Please fill in all required fields', 'error')
             return render_template('select.html')
 
         #converts date into datetime object to be able to compare
         start_datetime = datetime.datetime.strptime(start_date, "%Y-%m-%d")
         end_datetime = datetime.datetime.strptime(end_date, "%Y-%m-%d") 
 
-        #timedelta(1) adds one day to end_datetime compare the entire day
-
-
-        symptoms = mongo.reading_email(email, start_datetime, end_datetime + datetime.timedelta(1))
+        symptoms = mongo.find_symptoms(email, start_datetime, end_datetime + datetime.timedelta(1)) #timedelta(1) adds one day to end_datetime compare the entire day
+        
         return render_template('show_symptoms.html', start_date=start_date, end_date=end_date, symptoms=symptoms)
-    
-    elif request.args.get("Find All"):
+    else:
+        return render_template('404.html'), 404
+
+@app.route('/find_all')
+def find_all():
+    if request.args.get("Find All"):
         email = session['email']
         if not email:
             return render_template('select.html')
 
-        symptoms = mongo.reading_email(email, None, None, True)
+        symptoms = mongo.find_all_symptoms(email)
         return render_template('show_symptoms.html', start_date=None, end_date=None, symptoms=symptoms)
 
-    # TODO: CREATE 404 PAGE WHEN YOU HAVE AND IF AND ELIF AND NO ELSE
-    # else:
-    #     return render_template('404.html'), 404
+    else:
+        return render_template('404.html'), 404
+
 
 # This chunk was taken from the MailGun Docs
 def _verify(api_key, token, timestamp, signature):

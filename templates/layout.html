@@ -1,16 +1,34 @@
 <!doctype html>
 <html lang="en">
+
 <title>Symptomatic</title>
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
 
 <div class=page>
-	<h1>Symptomatic</h1>
-	{% block body %}{% endblock %}
-</div>
+  <h1>Symptomatic</h1>
 
-<div class="nav pull-right">
+<div class="metanv" >
 {% if not session.logged_in %}
-<a href="/login">Login or Signup</a>
+  <a href="/login">Login</a>
+  <a href="/sign_up">Sign Up</a>
 {% else %}
-<a href="/logout">Logout</a>
+  <a href="/logout">Logout</a>
 {% endif %}
 </div>
+
+<br>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+  <div class=flash>
+  {% for category, message in messages %}
+    <li class="{{ category }}">{{ message }}</li>
+  {% endfor %}
+  </ul>
+</div>
+{% endif %}
+{% endwith %}
+</div>
+
+<br>
+{% block body %}{% endblock %}

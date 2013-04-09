@@ -19,12 +19,13 @@ class User(object):
 
     @classmethod
     def validate(cls, first_name, last_name, fb_email, email, birthday):
-
         # TODO: Figure out more exceptions
-        if type(first_name) != unicode:
-            raise UserValidationError("first name is messed up")
-        elif type(last_name) != unicode:
-            raise UserValidationError("last name is bad")
+        if type(first_name) != unicode or first_name == None:
+            raise UserValidationError("Invalid First Name")
+        elif type(last_name) != unicode or last_name == None:
+            raise UserValidationError("Invalid Last Name")
+        elif birthday == "":
+            raise UserValidationError("Birthday field is empty")
 
         return cls(first_name, last_name, fb_email, email, birthday)
 
@@ -45,7 +46,6 @@ class Email(object):
     @classmethod
     def validate(cls, date, sender, symptoms, body_plain):
         # TODO: Figure out more exceptions
-
         if type(date) != datetime.datetime:
             raise EmailValidationError("date is not of type datetime")
         elif body_plain.splitlines() != symptoms:
