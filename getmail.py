@@ -10,16 +10,16 @@ login = os.environ.get('MAILGUN_LOGIN')
 password = os.environ.get('MAILGUN_PASSWORD')
 
 def create_route():
-	"""
-	Creates a new route with mailgun where emails could be sent to
-	"""
-	return requests.post(
-		"https://api.mailgun.net/v2/routes",
-		auth=(user_name, api_key),
-		data=MultiDict([("priority", 1),
-						("description", "email route"),
-						("expression", "match_recipient('')"),
-						("action", "forward('http://shrouded-tundra-4968.herokuapp.com/messages')"),
-						("action", "stop()")]))
+    """
+    Creates a new route with mailgun where emails could be sent to
+    """
+    return requests.post(
+        "https://api.mailgun.net/v2/routes",
+        auth=(user_name, api_key),
+        data=MultiDict([("priority", 1),
+                        ("description", "email route"),
+                        ("expression", "match_recipient('')"),
+                        ("action", "forward('http://shrouded-tundra-4968.herokuapp.com/messages')"),
+                        ("action", "stop()")]))
 
 create_route()
