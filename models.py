@@ -45,6 +45,9 @@ class Email(object):
 
     @classmethod
     def validate(cls, date, sender, symptoms, body_plain):
+        """
+        date : datetime
+        """
         # TODO: Figure out more exceptions
         if type(date) != datetime.datetime:
             raise EmailValidationError("date is not of type datetime")
@@ -53,7 +56,8 @@ class Email(object):
         elif not re.match(r"[^@]+@[^@]+\.[^@]+", sender): 
             raise EmailValidationError("invalid email address")
 
-        return cls(date=date, sender=sender, symptoms=symptoms, body_plain=body_plain)
+        return cls(date=date, sender=sender, symptoms=symptoms,
+                   body_plain=body_plain)
 
 
 class EmailValidationError(Exception):

@@ -106,7 +106,7 @@ def messages():
     sender = request.form.get('sender')
     recipient = request.form.get('recipient')
     body_plain = request.form.get('body-plain', '')
-    timestamp = request.form.get('timestamp', '')
+    timestamp = request.form.get('timestamp')
 
     # TODO: CHECK IF THIS VALIDATION WORKS WHEN MAILGUN SENDS POST REQUEST
     # if _verify(api_key=api_key, token=token, timestamp=timestamp, signature=signature):
@@ -117,8 +117,10 @@ def messages():
 
     date = datetime.datetime.fromtimestamp(int(timestamp))  #converts timestamp into datetime type
 
-    e = Email.validate(date=date, sender=sender, body_plain=body_plain, symptoms=body_plain.splitlines())
+    e = Email.validate(date=date, sender=sender, body_plain=body_plain,
+                       symptoms=body_plain.splitlines())
     
+    # Can this fail?
     mongo.save_email(e)
 
     return "OK"
@@ -131,38 +133,32 @@ def find_symptoms():
 
 @app.route('/show_symptoms')
 def show_symptoms():
-    if request.args.get('Submit'):
-        email = session['email']
-        start_date = request.args.get('start_date')
-        end_date = request.args.get('end_date')
+    email = session['email']
+    start_date = request.args.get('start_date')
+    end_date = request.args.get('end_date')
 
-        if not start_date or not end_date or not email:
-            flash(u'Please fill in all required fields', 'error')
-            return render_template('select.html')
+    if not start_date or not end_date or not email:
+        flash(u'Please fill in all required fields', 'error')
+        return render_template('select.html')
 
-        #converts date into datetime object to be able to compare
-        start_datetime = datetime.datetime.strptime(start_date, "%Y-%m-%d")
-        end_datetime = datetime.datetime.strptime(end_date, "%Y-%m-%d") 
+    #converts date into datetime object to be able to compare
+    start_datetime = datetime.datetime.strptime(start_date, "%Y-%m-%d").date()
+    end_datetime = datetime.datetime.strptime(end_date, "%Y-%m-%d").date()
 
-        symptoms = mongo.find_symptoms(email, start_datetime, end_datetime + datetime.timedelta(1)) #timedelta(1) adds one day to end_datetime compare the entire day
-        
-        return render_template('show_symptoms.html', start_date=start_date, end_date=end_date, symptoms=symptoms)
-    else:
-        return render_template('404.html'), 404
+    symptoms = mongo.find_symptoms(email, start_datetime, end_datetime)       
+
+    return render_template('show_symptoms.html', start_date=start_date,
+                           end_date=end_date, symptoms=symptoms)
 
 @app.route('/find_all')
 def find_all():
-    if request.args.get("Find All"):
-        email = session['email']
-        if not email:
-            return render_template('select.html')
+    email = session['email']
+    if not email:
+        return render_template('select.html')
 
-        symptoms = mongo.find_all_symptoms(email)
-        return render_template('show_symptoms.html', start_date=None, end_date=None, symptoms=symptoms)
-
-    else:
-        return render_template('404.html'), 404
-
+    symptoms = mongo.find_all_symptoms(email)
+    return render_template('show_symptoms.html', start_date=None,
+                           end_date=None, symptoms=symptoms)
 
 # This chunk was taken from the MailGun Docs
 def _verify(api_key, token, timestamp, signature):

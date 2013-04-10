@@ -18,11 +18,10 @@ def save_email(e):
     Saves the symptoms along with the timestamp, sender and email in mongodb
     """
     email = db.email
-    r_email = e.to_json()
 
     #TODO: Figure out more insertion errors and catch all
     try:
-        email.insert(r_email) 
+        email.insert(e.to_json()) 
     except:
         print "insert failed:", sys.exec_info()[0]
 
@@ -33,19 +32,18 @@ def find_symptoms(sender=None, start_date=None, end_date=None):
     Finds the entry according to the sender (the person logged in), 
     the start date and the end date
     """
+    end_date += datetime.timedelta(1)
     email = db.email 
-    result = []
-
-    if sender and start_date and end_date:
-        for message in email.find( { "sender" : sender, 
-                                     "date" : { "$gte" : start_date, 
-                                                "$lt" : end_date } } ):
-            for symptom in message['symptoms']:
-                result.append(symptom)
-    return set(result)
+    messages = email.find({ "sender" : sender, 
+                            "date" : { "$gte" : start_date, 
+                                       "$lt" : end_date } })
+    result = set(symptom for message in messages
+                         for symptom in message['symptoms'])
+    return result
 
 def find_all_symptoms(sender=None):
     email = db.email 
+    # Convert to comprehension syntax.
     result = []
     for message in email.find({"sender" : sender}):
         for symptom in message['symptoms']:
@@ -69,11 +67,9 @@ def add_user(u):
     Accepts models.User class Adds a new user in mongodb 
     """
     user = db.user
-    save_user = u.to_json()
-
     #TODO: Add more error handling when inserting into DB
     try:
-        user.insert(save_user)
+        user.insert(u.to_json())
     except:
         print "insert failed:", sys.exec_info()[0]
 
