@@ -1,5 +1,4 @@
 import pymongo
-import sys
 import os
 import datetime
 from urlparse import urlparse
@@ -19,11 +18,42 @@ def save_email(e):
     """
     email = db.email
 
-    #TODO: Figure out more insertion errors and catch all
     try:
         email.insert(e.to_json()) 
-    except:
-        print "insert failed:", sys.exec_info()[0]
+    
+    except pymongo.errors.AutoReconnect:
+        raise MongoInsertionError("Connection to the databas was lost. Will attempt to reconnect.")
+    
+    except pymongo.errors.CollectionInvalid:
+        raise MongoInsertionError("Collection validation has failed.")
+    
+    except pymongo.errors.ConfigurationError:
+        raise MongoInsertionError("Something is incorrectly configured.")
+    
+    except pymongo.errors.ConnectionFailure:
+        raise MongoInsertionError("A connection to the database cannot be made or is lost.")
+
+    except pymongo.errors.DuplicateKeyError:
+        raise MongoInsertionError("Duplicate keys at insertion.")
+    
+    except pymongo.errors.InvalidBSON:
+        raise MongoInsertionError("Trying to create a BSON object from invalid data.") 
+
+    except pymongo.errors.InvalidName:
+        raise MongoInsertionError("An invalid name has been used.")
+
+    except pymongo.errors.InvalidOperation:
+        raise MongoInsertionError("Client attempted to perform an invalid operation.") 
+
+    except pymongo.errors.InvalidStringData:
+        raise MongoInsertionError("Trying to encode a string containing non-UTF8 data.")
+    
+    except pymongo.errors.InvalidURI:
+        raise MongoInsertionError("Trying to parse an invalid mongodb URI.")
+
+    except pymongo.errors.OperationFailure:
+        raise MongoInsertionError("Inserting has failed.")
+
 
 def find_symptoms(sender=None, start_date=None, end_date=None):
     """
@@ -37,18 +67,17 @@ def find_symptoms(sender=None, start_date=None, end_date=None):
     messages = email.find({ "sender" : sender, 
                             "date" : { "$gte" : start_date, 
                                        "$lt" : end_date } })
-    result = set(symptom for message in messages
-                         for symptom in message['symptoms'])
+    result = set(symptom for message in messages for symptom in message['symptoms'])
     return result
 
 def find_all_symptoms(sender=None):
+    """
+    Returns all symptoms from mongodb
+    """
     email = db.email 
-    # Convert to comprehension syntax.
-    result = []
-    for message in email.find({"sender" : sender}):
-        for symptom in message['symptoms']:
-            result.append(symptom)
-    return set(result)
+    messages = email.find({"sender" : sender})
+    result = set(symptom for message in messages for symptom in message['symptoms'])
+    return result
 
 def check_user(fb_email):
     """
@@ -67,10 +96,40 @@ def add_user(u):
     Accepts models.User class Adds a new user in mongodb 
     """
     user = db.user
-    #TODO: Add more error handling when inserting into DB
+
     try:
         user.insert(u.to_json())
-    except:
-        print "insert failed:", sys.exec_info()[0]
 
+    except pymongo.errors.AutoReconnect:
+        raise MongoInsertionError("Connection to the databas was lost. Will attempt to reconnect.")
+    
+    except pymongo.errors.CollectionInvalid:
+        raise MongoInsertionError("Collection validation has failed.")
+    
+    except pymongo.errors.ConfigurationError:
+        raise MongoInsertionError("Something is incorrectly configured.")
+    
+    except pymongo.errors.ConnectionFailure:
+        raise MongoInsertionError("A connection to the database cannot be made or is lost.")
+
+    except pymongo.errors.DuplicateKeyError:
+        raise MongoInsertionError("Duplicate keys at insertion.")
+    
+    except pymongo.errors.InvalidBSON:
+        raise MongoInsertionError("Trying to create a BSON object from invalid data.") 
+
+    except pymongo.errors.InvalidName:
+        raise MongoInsertionError("An invalid name has been used.")
+
+    except pymongo.errors.InvalidOperation:
+        raise MongoInsertionError("Client attempted to perform an invalid operation.") 
+
+    except pymongo.errors.InvalidStringData:
+        raise MongoInsertionError("Trying to encode a string containing non-UTF8 data.")
+    
+    except pymongo.errors.InvalidURI:
+        raise MongoInsertionError("Trying to parse an invalid mongodb URI.")
+
+    except pymongo.errors.OperationFailure:
+        raise MongoInsertionError("Inserting has failed.") 
         

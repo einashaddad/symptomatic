@@ -2,7 +2,7 @@
 
 from flask import Flask, render_template, request, url_for, redirect, session, flash, abort
 from flask_oauth import OAuth
-from models import User, UserValidationError, EmailValidationError, Email
+from models import User, Email
 import mongo
 import os
 import datetime
@@ -81,6 +81,7 @@ def sign_up():
 
         if not mongo.check_user(u.fb_email):        
             mongo.add_user(u)
+            session['email'] = email
             flash('Welcome %s, thanks for signing up!' % (first_name))
             return redirect('/find_symptoms')
         else:
@@ -115,12 +116,11 @@ def messages():
     
     # return "Nope", 404    
 
-    date = datetime.datetime.fromtimestamp(int(timestamp))  #converts timestamp into datetime type
+    date = datetime.datetime.fromtimestamp(int(timestamp))  
 
     e = Email.validate(date=date, sender=sender, body_plain=body_plain,
                        symptoms=body_plain.splitlines())
     
-    # Can this fail?
     mongo.save_email(e)
 
     return "OK"
@@ -142,8 +142,8 @@ def show_symptoms():
         return render_template('select.html')
 
     #converts date into datetime object to be able to compare
-    start_datetime = datetime.datetime.strptime(start_date, "%Y-%m-%d").date()
-    end_datetime = datetime.datetime.strptime(end_date, "%Y-%m-%d").date()
+    start_datetime = datetime.datetime.strptime(start_date, "%Y-%m-%d")
+    end_datetime = datetime.datetime.strptime(end_date, "%Y-%m-%d")
 
     symptoms = mongo.find_symptoms(email, start_datetime, end_datetime)       
 
