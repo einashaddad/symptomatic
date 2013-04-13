@@ -9,7 +9,6 @@ import datetime
 import hashlib, hmac
 
 app = Flask(__name__) 
-
 app.secret_key = os.environ.get('API_SECRET_KEY')
 
 oauth = OAuth()
@@ -21,7 +20,7 @@ facebook = oauth.remote_app('facebook',
     authorize_url='https://www.facebook.com/dialog/oauth',
     consumer_key= os.environ.get('CONSUMER_KEY'),
     consumer_secret=os.environ.get('CONSUMER_SECRET'),
-    request_token_params={'scope': ('email, ')}
+    request_token_params={'scope': ('email, '), 'auth_type': 'reauthenticate'}
 )
 
 @facebook.tokengetter
@@ -107,23 +106,26 @@ def messages():
     sender = request.form.get('sender')
     recipient = request.form.get('recipient')
     body_plain = request.form.get('body-plain', '')
-    timestamp = request.form.get('timestamp')
+    timestamp = request.form.get('timestamp') 
 
-    # TODO: CHECK IF THIS VALIDATION WORKS WHEN MAILGUN SENDS POST REQUEST
-    # if _verify(api_key=api_key, token=token, timestamp=timestamp, signature=signature):
-    #     mongo.saving_email(timestamp, sender, body_plain.splitlines(), body_plain)
-    #     return "OK"
+    # date = datetime.datetime.fromtimestamp(int(timestamp))  
+
+    # e = Email.validate(date=date, sender=sender, body_plain=body_plain,
+    #                    symptoms=body_plain.splitlines())
     
-    # return "Nope", 404    
+    # mongo.save_email(e)
 
-    date = datetime.datetime.fromtimestamp(int(timestamp))  
+    # return "OK"
 
-    e = Email.validate(date=date, sender=sender, body_plain=body_plain,
-                       symptoms=body_plain.splitlines())
-    
-    mongo.save_email(e)
+    #TODO: CHECK IF THIS VALIDATION WORKS WHEN MAILGUN SENDS POST REQUEST
+    if _verify(api_key=api_key, token=token, timestamp=timestamp, signature=signature):    
+        
+        date = datetime.datetime.fromtimestamp(int(timestamp))  
+        e = Email.validate(date=date, sender=sender, body_plain=body_plain, symptoms=body_plain.splitlines())
+        mongo.save_email(e)
+        return "OK"
 
-    return "OK"
+    return "Nope", 404   
 
 @app.route('/find_symptoms')
 def find_symptoms():
