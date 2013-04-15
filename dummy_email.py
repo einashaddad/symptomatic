@@ -11,7 +11,7 @@ This sends a dummy email to the app
 data = {'sender': 'einas.haddad@gmail.com', 
         'recipient': 'symtomatic@symtomatic.mailgun.org',
         'subject': 'test',
-        'body-plain': 'craycray\nsymptom',
+        'body-plain': 'test',
         'timestamp': str(int(time.time())),     
         }
 

@@ -5,8 +5,9 @@ from flask_oauth import OAuth
 from models import User, Email
 import mongo
 import os
-import datetime
+from datetime import datetime, timedelta
 import hashlib, hmac
+from functools import wraps
 
 app = Flask(__name__) 
 app.secret_key = os.environ.get('API_SECRET_KEY')
@@ -23,6 +24,16 @@ facebook = oauth.remote_app('facebook',
     request_token_params={'scope': ('email, '), 'auth_type': 'reauthenticate'}
 )
 
+def logged_in(f):
+    @wraps(f)
+    def decoratd_function(*args, **kwargs):
+        if session.get('logged_in'):
+            return f(*args, **kwargs)
+        else:
+            flash('Please log in first.', 'error')
+            return redirect('/')
+    return decoratd_function
+
 @facebook.tokengetter
 def get_facebook_token(token=None):
     return session.get('facebook_token')
@@ -30,7 +41,6 @@ def get_facebook_token(token=None):
 @app.route('/')
 def index():
     return render_template('index.html')
-
 
 @app.route('/login')
 def login():
@@ -41,7 +51,7 @@ def login():
 @app.route('/oauth-authorized')
 @facebook.authorized_handler
 def oauth_authorized(resp):
-    next_url = request.args.get('next') or url_for('/find_symptoms')
+    next_url = request.args.get('next') or url_for('find_symptoms')
 
     if resp is None or 'access_token' not in resp:
         return redirect('/')
@@ -91,6 +101,7 @@ def sign_up():
         return render_template('404.html'), 404
 
 @app.route('/logout')
+@logged_in
 def logout():
     session.pop('logged_in', None)
     session.pop('facebook_token', None)
@@ -108,32 +119,36 @@ def messages():
     body_plain = request.form.get('body-plain', '')
     timestamp = request.form.get('timestamp') 
 
-    # date = datetime.datetime.fromtimestamp(int(timestamp))  
+    date = datetime.fromtimestamp(int(timestamp))  
+    e = Email.validate(date=date, sender=sender, body_plain=body_plain, symptoms=body_plain.splitlines())
+    mongo.save_email(e)
 
-    # e = Email.validate(date=date, sender=sender, body_plain=body_plain,
-    #                    symptoms=body_plain.splitlines())
-    
-    # mongo.save_email(e)
+    return "OK"
 
-    # return "OK"
-
-    #TODO: CHECK IF THIS VALIDATION WORKS WHEN MAILGUN SENDS POST REQUEST
-    if _verify(api_key=api_key, token=token, timestamp=timestamp, signature=signature):    
+    # if _verify(api_key=api_key, token=token, timestamp=timestamp, signature=signature):    
         
-        date = datetime.datetime.fromtimestamp(int(timestamp))  
-        e = Email.validate(date=date, sender=sender, body_plain=body_plain, symptoms=body_plain.splitlines())
-        mongo.save_email(e)
-        return "OK"
+    #     date = datetime.fromtimestamp(int(timestamp))  
+    #     e = Email.validate(date=date, sender=sender, body_plain=body_plain, symptoms=body_plain.splitlines())
+    #     mongo.save_email(e)
+    #     return "OK"
 
-    return "Nope", 404   
+    # return "Nope", 404   
 
 @app.route('/find_symptoms')
+@logged_in
 def find_symptoms():
-    if not session.get('logged_in'):
-        return redirect('/login')
     return render_template('select.html')
 
+@app.route('/show_all')
+@logged_in
+def find_all():
+    email = session['email']
+    symptoms = mongo.find_all_symptoms(email)
+
+    return render_template('aggregate_view.html', start_date=None, end_date=None, symptoms=symptoms)
+
 @app.route('/show_symptoms')
+@logged_in
 def show_symptoms():
     email = session['email']
     start_date = request.args.get('start_date')
@@ -144,23 +159,24 @@ def show_symptoms():
         return render_template('select.html')
 
     #converts date into datetime object to be able to compare
-    start_datetime = datetime.datetime.strptime(start_date, "%Y-%m-%d")
-    end_datetime = datetime.datetime.strptime(end_date, "%Y-%m-%d")
+    start_datetime = datetime.strptime(start_date, "%Y-%m-%d")
+    end_datetime = datetime.strptime(end_date, "%Y-%m-%d")            
 
-    symptoms = mongo.find_symptoms(email, start_datetime, end_datetime)       
+    symptoms = mongo.find_symptoms(email, start_datetime, end_datetime)     
 
-    return render_template('show_symptoms.html', start_date=start_date,
-                           end_date=end_date, symptoms=symptoms)
+    if more_than_week(start_datetime, end_datetime):
+        return render_template('aggregate_view.html', start_date=start_date, end_date=end_date, symptoms=symptoms)
 
-@app.route('/find_all')
-def find_all():
-    email = session['email']
-    if not email:
-        return render_template('select.html')
+    return render_template('micro_view.html', start_date=start_date, end_date=end_date, symptoms=symptoms)
 
-    symptoms = mongo.find_all_symptoms(email)
-    return render_template('show_symptoms.html', start_date=None,
-                           end_date=None, symptoms=symptoms)
+def more_than_week(d1, d2):
+    monday1 = (d1 - timedelta(days=d1.weekday()))
+    monday2 = (d2 - timedelta(days=d2.weekday()))
+
+    difference = (monday2 - monday1).days
+    if difference >= 7:
+        return True
+    return False
 
 # This chunk was taken from the MailGun Docs
 def _verify(api_key, token, timestamp, signature):

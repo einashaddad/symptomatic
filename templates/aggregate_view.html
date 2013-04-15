@@ -8,7 +8,7 @@
 {% if symptoms %}
 <ul class=entries>
 {% for symptom in symptoms %}
-	<li><h4>{{ symptom }}</h4>
+	<li><h4>{{ symptom[0] }} - {{ symptom[1] }}%</h4>
 {% endfor %}
 </u1>
 {% endif %}

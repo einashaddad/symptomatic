@@ -2,6 +2,8 @@ import pymongo
 import os
 import datetime
 from urlparse import urlparse
+from collections import Counter
+
 
 MONGOHQ_URL = os.environ.get('MONGOHQ_URL')
 
@@ -67,8 +69,8 @@ def find_symptoms(sender=None, start_date=None, end_date=None):
     messages = email.find({ "sender" : sender, 
                             "date" : { "$gte" : start_date, 
                                        "$lt" : end_date } })
-    result = set(symptom for message in messages for symptom in message['symptoms'])
-    return result
+    result = Counter(symptom for message in messages for symptom in message['symptoms'])
+    return [(str(s), result[s]*100/sum(result.values())) for s in result]
 
 def find_all_symptoms(sender=None):
     """
@@ -76,8 +78,10 @@ def find_all_symptoms(sender=None):
     """
     email = db.email 
     messages = email.find({"sender" : sender})
-    result = set(symptom for message in messages for symptom in message['symptoms'])
-    return result
+    result = Counter(symptom for message in messages for symptom in message['symptoms'])
+    most_common = result.most_common(10)
+
+    return [(str(s[0]), result[s[0]]*100/sum(result.values())) for s in most_common]
 
 def check_user(fb_email):
     """
