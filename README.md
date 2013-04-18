@@ -15,6 +15,7 @@ To send a dummy_email with your symptoms:
     
 
 TODO:
-1. Add better email parsing (detect and ignore signatures)
-2. Send daily email through Heroku Scheduler 
-3. Twitter Bootstrap
+
+* Add better email parsing (detect and ignore signatures)
+* Send daily email through Heroku Scheduler 
+* Twitter Bootstrap
