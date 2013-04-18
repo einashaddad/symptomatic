@@ -136,4 +136,59 @@ def add_user(u):
 
     except pymongo.errors.OperationFailure:
         raise MongoInsertionError("Inserting has failed.") 
-        
+
+
+def signed_up(u):
+    """
+    Accepts models.User class Adds a new user in mongodb 
+    """
+    not_verified = db.not_verified
+
+    try:
+        not_verified.insert(u.to_json())
+
+    except pymongo.errors.AutoReconnect:
+        raise MongoInsertionError("Connection to the databas was lost. Will attempt to reconnect.")
+    
+    except pymongo.errors.CollectionInvalid:
+        raise MongoInsertionError("Collection validation has failed.")
+    
+    except pymongo.errors.ConfigurationError:
+        raise MongoInsertionError("Something is incorrectly configured.")
+    
+    except pymongo.errors.ConnectionFailure:
+        raise MongoInsertionError("A connection to the database cannot be made or is lost.")
+
+    except pymongo.errors.DuplicateKeyError:
+        raise MongoInsertionError("Duplicate keys at insertion.")
+    
+    except pymongo.errors.InvalidBSON:
+        raise MongoInsertionError("Trying to create a BSON object from invalid data.") 
+
+    except pymongo.errors.InvalidName:
+        raise MongoInsertionError("An invalid name has been used.")
+
+    except pymongo.errors.InvalidOperation:
+        raise MongoInsertionError("Client attempted to perform an invalid operation.") 
+
+    except pymongo.errors.InvalidStringData:
+        raise MongoInsertionError("Trying to encode a string containing non-UTF8 data.")
+    
+    except pymongo.errors.InvalidURI:
+        raise MongoInsertionError("Trying to parse an invalid mongodb URI.")
+
+    except pymongo.errors.OperationFailure:
+        raise MongoInsertionError("Inserting has failed.") 
+
+def verified(email):
+    not_verified = db.not_verified
+
+    user_found = not_verified.find_one( { "email": email } )
+
+    if user_found:
+        db.not_verified.remove({ "email": email })
+        return user_found
+    
+    return None     
+
+

@@ -8,6 +8,27 @@ class User(object):
         self.fb_email = fb_email
         self.email = email
         self.birthday = birthday    
+        self._validate()
+
+    def _validate(self):
+        if type(self.first_name) != unicode or not self.first_name:
+            raise UserValidationError("Invalid First Name")
+        elif type(self.last_name) != unicode or not self.last_name:
+            raise UserValidationError("Invalid Last Name")
+        elif not self.birthday:
+            raise UserValidationError("Birthday field is empty")
+
+    @classmethod
+    def from_json(cls, user):
+        first_name=user['first_name']
+        last_name=user['first_name']
+        fb_email=user['fb_email']
+        email=user['email']
+        birthday=user['birthday']
+
+        return cls(first_name=first_name, last_name=last_name, fb_email=fb_email, email=email, birthday=birthday)
+
+
 
     def to_json(self):
         return  { "first_name": self.first_name, 
@@ -17,16 +38,6 @@ class User(object):
                   "birthday" :  self.birthday,
                 }
 
-    @classmethod
-    def validate(cls, first_name, last_name, fb_email, email, birthday):
-        if type(first_name) != unicode or first_name == None:
-            raise UserValidationError("Invalid First Name")
-        elif type(last_name) != unicode or last_name == None:
-            raise UserValidationError("Invalid Last Name")
-        elif birthday == "":
-            raise UserValidationError("Birthday field is empty")
-
-        return cls(first_name, last_name, fb_email, email, birthday)
 
 class Email(object):
     def __init__(self, date, sender, symptoms, body_plain):

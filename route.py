@@ -3,14 +3,18 @@
 from flask import Flask, render_template, request, url_for, redirect, session, flash, abort
 from flask_oauth import OAuth
 from models import User, Email
-import mongo
-import os
-from datetime import datetime, timedelta
-import hashlib, hmac
 from functools import wraps
+from datetime import datetime, timedelta
+import mongo
+import mailgun
+import os
+import hashlib, hmac
+import sha3
+
 
 app = Flask(__name__) 
 app.secret_key = os.environ.get('API_SECRET_KEY')
+secret = os.environ.get('SECRET')
 
 oauth = OAuth()
 
@@ -86,19 +90,42 @@ def sign_up():
             flash(u'Please fill out all required fields', 'error')
             return render_template('sign_up.html')
 
-        u = User.validate(first_name=first_name, last_name=last_name, fb_email=fb_email,email=email, birthday=birthday)
+        u = User(first_name=first_name, last_name=last_name, fb_email=fb_email,email=email, birthday=birthday)
 
-        if not mongo.check_user(u.fb_email):        
-            mongo.add_user(u)
-            session['email'] = email
-            flash('Welcome %s, thanks for signing up!' % (first_name))
-            return redirect('/find_symptoms')
+        if not mongo.check_user(u.fb_email):  
+            s = hashlib.sha3_512()
+            s.update((secret+u.email).encode('utf-8'))
+            token = s.hexdigest()
+            mailgun.send_verification(u, token)
+            mongo.signed_up(u)
+            return render_template('verify.html')
+
         else:
             flash('%s, we see you have already signed up!' % (first_name))
             return redirect('/')
 
     else:
         return render_template('404.html'), 404
+
+@app.route('/verify', methods=['GET'])
+def verify_token():
+    email = request.args.get('email', '')
+    token = request.args.get('token', '')
+    user = mongo.verified(email) 
+    u = User.from_json(user)
+
+    s = hashlib.sha3_512()
+    s.update((secret+u.email).encode('utf-8'))
+
+    if s.hexdigest() == token:
+        mongo.add_user(u)
+        mailgun.add_list_member(u)
+        session['email'] = u.email
+        flash('Welcome %s, thanks for signing up!' % (u.first_name))
+        return redirect('/login')
+    else:
+        flash('We could not verify this email', 'error')
+        return render_template('404.html')
 
 @app.route('/logout')
 @logged_in
@@ -186,5 +213,5 @@ def _verify(api_key, token, timestamp, signature):
                              digestmod=hashlib.sha256).hexdigest()
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 58733))
-    app.run(debug=True, host='0.0.0.0', port=port)
+#    port = int(os.environ.get('PORT', 58733))
+    app.run(debug=True, host='0.0.0.0')#, port=port)
