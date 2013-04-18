@@ -12,3 +12,9 @@ To run on localhost:
 To send a dummy_email with your symptoms:
 
     python dummy_email.py
+    
+
+TODO:
+1. Add better email parsing (detect and ignore signatures)
+2. Send daily email through Heroku Scheduler 
+3. Twitter Bootstrap
