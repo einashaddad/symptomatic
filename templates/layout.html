@@ -4,28 +4,45 @@
 <title>Symptomatic</title>
 <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/bootstrap.css') }}">
 
-<div class=page>
-  <h1>Symptomatic</h1>
-
-<div class="metanv" >
-{% if not session.logged_in %}
-  <a href="/login">Login</a>
-  <a href="/sign_up">Sign Up</a>
-{% else %}
-  <a href="/logout">Logout</a>
-{% endif %}
-</div>
+<nav class="navbar navbar-fixed-top">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href={{ url_for("index") }}>Symptomatic</a>
+      <ul class="nav pull-right">
+        {% if not session.logged_in %}
+        <li class="inactive">
+          <a href="/login">Login</a>
+        </li>
+        <li class="inactive">
+          <a href="/sign_up">Sign Up</a>
+        </li>
+        {% else %}
+        <li class="inactive">
+          <a href="/logout">Logout</a>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
 
 <br>
 
 {% with messages = get_flashed_messages(with_categories=true) %}
 {% if messages %}
-  <div class=flash>
   {% for category, message in messages %}
-    <li class="{{ category }}">{{ message }}</li>
+    {% if category == "error" %}
+    <div class="alert alert-error">
+      <strong>Error! </strong>{{ message }}
+    </div>
+    
+    {% elif category == "success" %}
+    <div class="alert alert-success">
+      {{ message }}
+    </div>
+
+    {% endif %}
   {% endfor %}
-  </ul>
-</div>
 {% endif %}
 {% endwith %}
 </div>

@@ -101,7 +101,7 @@ def sign_up():
             return render_template('verify.html')
 
         else:
-            flash('%s, we see you have already signed up!' % (first_name))
+            flash('%s, we see you have already signed up! Please sign in.' % (first_name), "success")
             return redirect('/')
 
     else:
@@ -121,7 +121,7 @@ def verify_token():
         mongo.add_user(u)
         mailgun.add_list_member(u)
         session['email'] = u.email
-        flash('Welcome %s, thanks for signing up!' % (u.first_name))
+        flash('Welcome %s, thanks for signing up!' % (u.first_name), "success")
         return redirect('/login')
     else:
         flash('We could not verify this email', 'error')

@@ -1,14 +1,49 @@
 {% extends "layout.html" %}
 {% block body %}
 
-<form name="input" action="/sign_up" method="post">
-	First Name: <input type="text" name="first_name"/><br>
-	Last Name: <input type="text" name="last_name"/><br>
-	Facebook email address: <input type="text" name="fb_email"/><br>
-	Email address to receive reminders at:
-	<input type="text" name="email"/><br>
-	Birthday: <input type="date" name="birthday"/><br>
-	<input type="submit" name="Submit"/>
-</form>
+
+<div class="well span6 offset3">
+  <form class="form-horizontal" name="input" action="/sign_up" method="post">
+    <h2 class="form-signin-heading">Please sign up</h2>
+    <div class="control-group">
+      <label class="control-label" for="inputFirstName">First Name</label>
+      <div class="controls">
+        <input type="text" name="first_name" id="inputFirstName" placeholder="First Name">
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="inputLastName">Last Name</label>
+      <div class="controls">
+        <input type="text" name="last_name" id="inputLastName" placeholder="Last Name">
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="inputFbEmail">Facebook Email</label>
+      <div class="controls">
+        <input type="text" name="fb_email" id="inputFbEmail" placeholder="Facebook Email">
+      </div>
+    </div>  
+    <div class="control-group">
+      <label class="control-label" for="inputEmail">Email</label>
+      <div class="controls">
+        <input type="text" name="email" id="inputEmail" placeholder="Email">
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="inputBirthday">Birthday</label>
+      <div class="controls">
+        <input type="date" name="birthday" id="inputBirthday" placeholder="Birthday">
+      </div>
+    </div>
+    <div class="control-group">
+      <div class="controls">
+        <button type="submit" class="btn">Sign up</button>
+      </div>
+    </div>
+  </form>
+</div>
+
 
 {% endblock %}
+
+</form>

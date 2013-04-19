@@ -228,6 +228,8 @@ body {
   line-height: 20px;
   color: #333333;
   background-color: #ffffff;
+  padding-top: 20px;
+  padding-bottom: 40px;
 }
 
 a {
@@ -646,6 +648,37 @@ a:focus {
 
 .container-fluid:after {
   clear: both;
+}
+
+/* Custom container */
+.container-narrow {
+  margin: 0 auto;
+  max-width: 700px;
+}
+.container-narrow > hr {
+  margin: 30px 0;
+}
+
+/* Main marketing message and sign up button */
+.jumbotron {
+  margin: 60px 0;
+  text-align: center;
+}
+.jumbotron h1 {
+  font-size: 72px;
+  line-height: 1;
+}
+.jumbotron .btn {
+  font-size: 21px;
+  padding: 14px 24px;
+}
+
+/* Supporting marketing content */
+.marketing {
+  margin: 60px 0;
+}
+.marketing p + h4 {
+  margin-top: 28px;
 }
 
 p {
@@ -5720,6 +5753,12 @@ a.badge:focus {
 .btn-mini .label,
 .btn-mini .badge {
   top: 0;
+}
+
+@media (max-width: 979px) {
+  body {
+    padding-top: 0px;
+  }
 }
 
 @-webkit-keyframes progress-bar-stripes {
