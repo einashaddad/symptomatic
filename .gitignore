@@ -1,3 +1,4 @@
 /symptomize
 launcher.sh
 *.pyc
+*.DS_Store
