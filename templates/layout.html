@@ -1,51 +1,67 @@
 <!doctype html>
 <html lang="en">
 
-<title>Symptomatic</title>
-<link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/bootstrap.css') }}">
+<head>
+  <title>Symptomatic</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/custom.css')}}">
+</head>
 
-<nav class="navbar navbar-fixed-top">
-  <div class="navbar-inner">
-    <div class="container">
-      <a class="brand" href={{ url_for("index") }}>Symptomatic</a>
-      <ul class="nav pull-right">
-        {% if not session.logged_in %}
-        <li class="inactive">
-          <a href="/login">Login</a>
-        </li>
-        <li class="inactive">
-          <a href="/sign_up">Sign Up</a>
-        </li>
-        {% else %}
-        <li class="inactive">
-          <a href="/logout">Logout</a>
-        </li>
-        {% endif %}
-      </ul>
+<body>
+
+  <nav class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <a class="brand" href={{ url_for("index") }}>Symptomatic</a>
+        <ul class="nav pull-right">
+          {% if not session.logged_in %}
+          <li class="inactive">
+            <a href="/login">Login</a>
+          </li>
+          <li class="inactive">
+            <a href="/sign_up">Sign Up</a>
+          </li>
+          {% else %}
+          <li class="inactive">
+            <a href="/logout">Logout</a>
+          </li>
+          {% endif %}
+        </ul>
+      </div>
     </div>
+  </nav>
+
+  <br>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      {% if category == "error" %}
+      <div class="alert alert-error">
+        <strong>Error! </strong>{{ message }}
+      </div>
+      
+      {% elif category == "success" %}
+      <div class="alert alert-success">
+        {{ message }}
+      </div>
+
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+  {% endwith %}
   </div>
-</nav>
 
-<br>
+  <div class="container">
+  <div class="row">
+  {% block body %}{% endblock %}
+  </div>
+  </div>
 
-{% with messages = get_flashed_messages(with_categories=true) %}
-{% if messages %}
-  {% for category, message in messages %}
-    {% if category == "error" %}
-    <div class="alert alert-error">
-      <strong>Error! </strong>{{ message }}
-    </div>
-    
-    {% elif category == "success" %}
-    <div class="alert alert-success">
-      {{ message }}
-    </div>
+  <div class="footer">
+    <p>Made with <i class="icon-heart"></i> by <a href="https://github.com/einashaddad">einas</a> at <a href="http://www.hackerschool.com">hackerschool</a></p>
+  </div>
+</body>
+</html>
 
-    {% endif %}
-  {% endfor %}
-{% endif %}
-{% endwith %}
-</div>
 
-<br>
-{% block body %}{% endblock %}

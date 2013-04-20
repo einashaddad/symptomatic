@@ -101,7 +101,7 @@ def sign_up():
             return render_template('verify.html')
 
         else:
-            flash('%s, we see you have already signed up! Please sign in.' % (first_name), "success")
+            flash('%s, we see you have already signed up! Please log in.' % (first_name), "success")
             return redirect('/')
 
     else:
@@ -214,4 +214,4 @@ def _verify(api_key, token, timestamp, signature):
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 58733))
-    app.run(debug=True, host='0.0.0.0')#, port=port)
+    app.run(debug=True, host='0.0.0.0', port=port)

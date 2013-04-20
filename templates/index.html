@@ -1,8 +1,7 @@
 {% extends "layout.html" %}
 {% block body %}
-<div class="container-narrow">
 
-  <div class="jumbotron">
+  <div class="hero-unit">
     <h1>Symptomatic</h1>
     {% if not session.logged_in %}
     <p class="lead">Track and manage your daily symptoms with a click of an email!</p>
@@ -13,12 +12,6 @@
   </div>
   {% endif %}
 
-
-<div class="footer">
-  <p>Made with <i class="icon-heart"></i> by <a href="https://github.com/einashaddad">einas</a> at <a href="http://www.hackerschool.com">hackerschool</a></p>
-</div>
-
-</div>
 
     
 {% endblock %}
