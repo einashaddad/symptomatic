@@ -11,5 +11,9 @@
 }
 
 .well {
-	margin-top: 60px
+	margin-top: 60px;
+}
+
+.row {
+	padding-top: 30px;
 }

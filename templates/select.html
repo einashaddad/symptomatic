@@ -1,16 +1,17 @@
 {% extends "layout.html" %}
 {% block body %}
-
-<form name="input" action="/show_symptoms" method="get">
-    For specific dates:<br>
-    start date: <input type="date" name="start_date"/> end date: <input type="date" name="end_date"/>
-    <input type="submit" name="Submit"/>
-    <br><br>
-</form>
-
-<form name="input" action="/show_all" method="get">
-    For all symptoms:<br>
-    <input type="submit"  value="Find All" name="Find All"/>
-</form>
+<div class="container">
+  <div class="well span6 offset3">
+    <form name="input" action="/show_symptoms" method="get">
+        <p class="lead">For specific dates:</p>
+        <p class="lead">start date: <input type="date" name="start_date"/></p>
+        <p class="lead">end date: <input type="date" name="end_date"/></p>
+        <button class="btn btn-large btn-primary" type="submit" name="Submit">Submit</button>
+    </form>
+    <form name="input" action="/show_all" method="get">
+        <button class="btn btn-large btn-primary" type="submit" value="Find All" name="Find All">Find all symptoms</button>
+    </form>
+  </div>
+</div>
 
 {% endblock %}
