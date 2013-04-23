@@ -84,13 +84,12 @@ def sign_up():
         last_name = request.form.get('last_name')
         fb_email = request.form.get('fb_email')
         email = request.form.get('email')
-        birthday = request.form.get('birthday')
 
-        if not first_name or not last_name or not fb_email or not email or not birthday:
+        if not first_name or not last_name or not fb_email or not email:
             flash(u'Please fill out all required fields', 'error')
             return render_template('sign_up.html')
 
-        u = User(first_name=first_name, last_name=last_name, fb_email=fb_email,email=email, birthday=birthday)
+        u = User(first_name=first_name, last_name=last_name, fb_email=fb_email,email=email)
 
         if not mongo.check_user(u.fb_email):  
             s = hashlib.sha3_512()
