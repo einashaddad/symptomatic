@@ -129,6 +129,7 @@ def verify_token():
         #mailgun.add_list_member(u)
         session['email'] = u.email
         flash('Welcome %s, thanks for signing up!' % (u.first_name), "success")
+        mongo.delete_verified(u.email)
         return redirect('/login')
     else:
         flash('We could not verify this email', 'error')

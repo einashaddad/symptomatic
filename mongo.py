@@ -148,7 +148,7 @@ def signed_up(u):
         not_verified.insert(u.to_json())
 
     except pymongo.errors.AutoReconnect:
-        raise MongoInsertionError("Connection to the database was lost. Will attempt to reconnect.")
+        raise MongoInsertionError("Connection to the databas was lost. Will attempt to reconnect.")
     
     except pymongo.errors.CollectionInvalid:
         raise MongoInsertionError("Collection validation has failed.")
@@ -182,13 +182,10 @@ def signed_up(u):
 
 def verified(email):
     not_verified = db.not_verified
+    return not_verified.find_one( { "email": email } )
 
-    user_found = not_verified.find_one( { "email": email } )
-
-    if user_found:
-        db.not_verified.remove({ "email": email })
-        return user_found
-    
-    return None     
+def delete_verified(email):
+    not_verified = db.not_verified
+    db.not_verified.remove({ "email": email })
 
 
