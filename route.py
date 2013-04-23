@@ -95,8 +95,8 @@ def sign_up():
             s = hashlib.sha3_512()
             s.update((secret+u.email).encode('utf-8'))
             token = s.hexdigest()
-            mailgun.send_verification(u, token)
             mongo.signed_up(u)
+            mailgun.send_verification(u, token)
             return render_template('verify.html')
 
         else:
@@ -109,21 +109,31 @@ def sign_up():
 @app.route('/verify', methods=['GET'])
 def verify_token():
     email = request.args.get('email', '')
-    token = request.args.get('token', '')
-    user = mongo.verified(email) 
+    token = request.args.get('token', '') 
+    print "email:", email
+    print "token:", token
+
+    user = mongo.verified(email)
+    
+    print "user form mongo:", user
+
     u = User.from_json(user)
+
+    print "user object created:", u
 
     s = hashlib.sha3_512()
     s.update((secret+u.email).encode('utf-8'))
 
     if s.hexdigest() == token:
         mongo.add_user(u)
-        mailgun.add_list_member(u)
+        #mailgun.add_list_member(u)
         session['email'] = u.email
         flash('Welcome %s, thanks for signing up!' % (u.first_name), "success")
         return redirect('/login')
     else:
         flash('We could not verify this email', 'error')
+        print "hashed:", s.hexdigest
+        print "token:", token
         return render_template('404.html')
 
 @app.route('/logout')

@@ -140,7 +140,7 @@ def add_user(u):
 
 def signed_up(u):
     """
-    Accepts models.User class Adds a new user in mongodb 
+    Accepts models.User class adds a new user in mongodb as signed up
     """
     not_verified = db.not_verified
 
@@ -148,7 +148,7 @@ def signed_up(u):
         not_verified.insert(u.to_json())
 
     except pymongo.errors.AutoReconnect:
-        raise MongoInsertionError("Connection to the databas was lost. Will attempt to reconnect.")
+        raise MongoInsertionError("Connection to the database was lost. Will attempt to reconnect.")
     
     except pymongo.errors.CollectionInvalid:
         raise MongoInsertionError("Collection validation has failed.")
