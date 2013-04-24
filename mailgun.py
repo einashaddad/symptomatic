@@ -40,7 +40,7 @@ def add_list_member(u):
         auth=(user_name, api_key),
         data={'subscribed': True,
               'address': u.email,
-              'name': u.first_name + u.last_name,
+              'name': u.first_name + ' ' + u.last_name,
               'description': "User"})
 
 def send_verification(u, token):
@@ -54,7 +54,7 @@ def send_verification(u, token):
                     We're almost ready to activate your account. We just need you to \
                     verify your email address.<br><br>\
                     Please click on the following link to verify:\
-                    http://shrouded-tundra-4968.herokuapp.com/verify?email=%s&token=%s'\
+                    http://shrouded-tundra-4968.herokuapp.com/verify?email=%s&token=%s\
                     <br><br>- The Symptomatic Team</h4></html>" % (u.first_name, u.email, token) }
             )
 

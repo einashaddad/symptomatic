@@ -74,8 +74,8 @@ def oauth_authorized(resp):
     
     return redirect('/sign_up')
 
-
 @app.route('/sign_up', methods=['GET', 'POST'])
+@logged_in
 def sign_up():
     if request.method == 'GET':
         return render_template('sign_up.html')
@@ -110,32 +110,24 @@ def sign_up():
 def verify_token():
     email = request.args.get('email', '')
     token = request.args.get('token', '') 
-    print "email:", email
-    print "token:", token
 
     user = mongo.verified(email)
-    
-    print "user form mongo:", user
 
-    u = User.from_json(user)
+    if user:
+        u = User.from_json(user)
 
-    print "user object created:", u
+        s = hashlib.sha3_512()
+        s.update((secret+u.email).encode('utf-8'))
 
-    s = hashlib.sha3_512()
-    s.update((secret+u.email).encode('utf-8'))
-
-    if s.hexdigest() == token:
-        mongo.add_user(u)
-        #mailgun.add_list_member(u)
-        session['email'] = u.email
-        flash('Welcome %s, thanks for signing up!' % (u.first_name), "success")
-        mongo.delete_verified(u.email)
-        return redirect('/login')
-    else:
-        flash('We could not verify this email', 'error')
-        print "hashed:", s.hexdigest()
-        print "token:", token
-        return render_template('404.html')
+        if s.hexdigest() == token:
+            mongo.add_user(u)
+            mailgun.add_list_member(u)
+            session['email'] = u.email
+            flash('Welcome %s, thanks for signing up!' % (u.first_name), "success")
+            mongo.delete_verified(u.email)
+            return redirect('/find_symptoms')
+    flash('We could not verify this email', 'error')
+    return render_template('404.html')
 
 @app.route('/logout')
 @logged_in
