@@ -133,7 +133,7 @@ def verify_token():
         return redirect('/login')
     else:
         flash('We could not verify this email', 'error')
-        print "hashed:", s.hexdigest
+        print "hashed:", s.hexdigest()
         print "token:", token
         return render_template('404.html')
 
