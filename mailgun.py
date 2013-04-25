@@ -58,5 +58,5 @@ def send_verification(u, token):
                     <br><br>- The Symptomatic Team</h4></html>" % (u.first_name, u.email, token) }
             )
 
-
-
+if __name__ == '__main__':
+    daily_email()

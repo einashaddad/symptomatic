@@ -80,10 +80,10 @@ def sign_up():
     if request.method == 'GET':
         return render_template('sign_up.html')
     elif request.method == 'POST':
-        first_name = request.form.get('first_name')
-        last_name = request.form.get('last_name')
-        fb_email = request.form.get('fb_email')
-        email = request.form.get('email')
+        first_name = request.form['first_name']
+        last_name = request.form['last_name']
+        fb_email = request.form['fb_email']
+        email = request.form['email']
 
         if not first_name or not last_name or not fb_email or not email:
             flash(u'Please fill out all required fields', 'error')
@@ -154,14 +154,14 @@ def messages():
 
     return "OK"
 
-    # if _verify(api_key=api_key, token=token, timestamp=timestamp, signature=signature):    
+    if _verify(api_key=api_key, token=token, timestamp=timestamp, signature=signature):    
         
-    #     date = datetime.fromtimestamp(int(timestamp))  
-    #     e = Email.validate(date=date, sender=sender, body_plain=body_plain, symptoms=body_plain.splitlines())
-    #     mongo.save_email(e)
-    #     return "OK"
+        date = datetime.fromtimestamp(int(timestamp))  
+        e = Email.validate(date=date, sender=sender, body_plain=body_plain, symptoms=body_plain.splitlines())
+        mongo.save_email(e)
+        return "OK"
 
-    # return "Nope", 404   
+    return "Nope", 404   
 
 @app.route('/find_symptoms')
 @logged_in
@@ -180,8 +180,8 @@ def find_all():
 @logged_in
 def show_symptoms():
     email = session['email']
-    start_date = request.args.get('start_date')
-    end_date = request.args.get('end_date')
+    start_date = request.args['start_date']
+    end_date = request.args['end_date']
 
     if not start_date or not end_date or not email:
         flash(u'Please fill in all required fields', 'error')
@@ -217,3 +217,4 @@ def _verify(api_key, token, timestamp, signature):
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 58733))
     app.run(debug=True, host='0.0.0.0', port=port)
+    

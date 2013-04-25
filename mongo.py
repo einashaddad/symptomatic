@@ -19,43 +19,7 @@ def save_email(e):
     Saves the symptoms along with the timestamp, sender and email in mongodb
     """
     email = db.email
-
-    try:
-        email.insert(e.to_json()) 
-    
-    except pymongo.errors.AutoReconnect:
-        raise MongoInsertionError("Connection to the databas was lost. Will attempt to reconnect.")
-    
-    except pymongo.errors.CollectionInvalid:
-        raise MongoInsertionError("Collection validation has failed.")
-    
-    except pymongo.errors.ConfigurationError:
-        raise MongoInsertionError("Something is incorrectly configured.")
-    
-    except pymongo.errors.ConnectionFailure:
-        raise MongoInsertionError("A connection to the database cannot be made or is lost.")
-
-    except pymongo.errors.DuplicateKeyError:
-        raise MongoInsertionError("Duplicate keys at insertion.")
-    
-    except pymongo.errors.InvalidBSON:
-        raise MongoInsertionError("Trying to create a BSON object from invalid data.") 
-
-    except pymongo.errors.InvalidName:
-        raise MongoInsertionError("An invalid name has been used.")
-
-    except pymongo.errors.InvalidOperation:
-        raise MongoInsertionError("Client attempted to perform an invalid operation.") 
-
-    except pymongo.errors.InvalidStringData:
-        raise MongoInsertionError("Trying to encode a string containing non-UTF8 data.")
-    
-    except pymongo.errors.InvalidURI:
-        raise MongoInsertionError("Trying to parse an invalid mongodb URI.")
-
-    except pymongo.errors.OperationFailure:
-        raise MongoInsertionError("Inserting has failed.")
-
+    email.insert(e.to_json()) 
 
 def find_symptoms(sender=None, start_date=None, end_date=None):
     """
@@ -100,85 +64,14 @@ def add_user(u):
     Accepts models.User class Adds a new user in mongodb 
     """
     user = db.user
-
-    try:
-        user.insert(u.to_json())
-
-    except pymongo.errors.AutoReconnect:
-        raise MongoInsertionError("Connection to the databas was lost. Will attempt to reconnect.")
-    
-    except pymongo.errors.CollectionInvalid:
-        raise MongoInsertionError("Collection validation has failed.")
-    
-    except pymongo.errors.ConfigurationError:
-        raise MongoInsertionError("Something is incorrectly configured.")
-    
-    except pymongo.errors.ConnectionFailure:
-        raise MongoInsertionError("A connection to the database cannot be made or is lost.")
-
-    except pymongo.errors.DuplicateKeyError:
-        raise MongoInsertionError("Duplicate keys at insertion.")
-    
-    except pymongo.errors.InvalidBSON:
-        raise MongoInsertionError("Trying to create a BSON object from invalid data.") 
-
-    except pymongo.errors.InvalidName:
-        raise MongoInsertionError("An invalid name has been used.")
-
-    except pymongo.errors.InvalidOperation:
-        raise MongoInsertionError("Client attempted to perform an invalid operation.") 
-
-    except pymongo.errors.InvalidStringData:
-        raise MongoInsertionError("Trying to encode a string containing non-UTF8 data.")
-    
-    except pymongo.errors.InvalidURI:
-        raise MongoInsertionError("Trying to parse an invalid mongodb URI.")
-
-    except pymongo.errors.OperationFailure:
-        raise MongoInsertionError("Inserting has failed.") 
-
+    user.insert(u.to_json())
 
 def signed_up(u):
     """
     Accepts models.User class adds a new user in mongodb as signed up
     """
     not_verified = db.not_verified
-
-    try:
-        not_verified.insert(u.to_json())
-
-    except pymongo.errors.AutoReconnect:
-        raise MongoInsertionError("Connection to the databas was lost. Will attempt to reconnect.")
-    
-    except pymongo.errors.CollectionInvalid:
-        raise MongoInsertionError("Collection validation has failed.")
-    
-    except pymongo.errors.ConfigurationError:
-        raise MongoInsertionError("Something is incorrectly configured.")
-    
-    except pymongo.errors.ConnectionFailure:
-        raise MongoInsertionError("A connection to the database cannot be made or is lost.")
-
-    except pymongo.errors.DuplicateKeyError:
-        raise MongoInsertionError("Duplicate keys at insertion.")
-    
-    except pymongo.errors.InvalidBSON:
-        raise MongoInsertionError("Trying to create a BSON object from invalid data.") 
-
-    except pymongo.errors.InvalidName:
-        raise MongoInsertionError("An invalid name has been used.")
-
-    except pymongo.errors.InvalidOperation:
-        raise MongoInsertionError("Client attempted to perform an invalid operation.") 
-
-    except pymongo.errors.InvalidStringData:
-        raise MongoInsertionError("Trying to encode a string containing non-UTF8 data.")
-    
-    except pymongo.errors.InvalidURI:
-        raise MongoInsertionError("Trying to parse an invalid mongodb URI.")
-
-    except pymongo.errors.OperationFailure:
-        raise MongoInsertionError("Inserting has failed.") 
+    not_verified.insert(u.to_json())
 
 def verified(email):
     not_verified = db.not_verified
@@ -187,5 +80,4 @@ def verified(email):
 def delete_verified(email):
     not_verified = db.not_verified
     db.not_verified.remove({ "email": email })
-
-
+    
