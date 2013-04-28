@@ -11,12 +11,20 @@ To run on localhost:
 
     python route.py
 
-To send a dummy_email with your symptoms:
+The following environment variables need to be set:
 
-    python dummy_email.py
+* API_SECRET_KEY
+* CONSUMER_KEY
+* CONSUMER_SECRET
+* MAILGUN_APIKEY
+* MAILGUN_LOGIN
+* MAILGUN_PASSWORD
+* MAILGUN_USERNAME
+* SECRET
     
 
 TODO:
 
 * Add better email parsing (detect and ignore signatures)
-* Send daily email through Heroku Scheduler 
+* Add a feedback page for users
+* Add a settings page
