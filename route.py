@@ -156,11 +156,11 @@ def messages():
     return "OK"
 
     if _verify(api_key=api_key, token=token, timestamp=timestamp, signature=signature):    
-        
-        date = datetime.fromtimestamp(int(timestamp))  
-        e = Email.validate(date=date, sender=sender, body_plain=body_plain, symptoms=body_plain.splitlines())
-        mongo.save_email(e)
-        return "OK"
+        if sender != "symptomatic@symptomatic.mailgun.org":
+            date = datetime.fromtimestamp(int(timestamp))  
+            e = Email.validate(date=date, sender=sender, body_plain=body_plain, symptoms=body_plain.splitlines())
+            mongo.save_email(e)
+            return "OK"
 
     return "Nope", 404   
 
