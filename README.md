@@ -30,3 +30,4 @@ TODO:
 * Graphs and analytics when looking up symptoms
 * Texting capability (to prompt user to submit symptoms)
 * Alternative authentication method (either OpenID or Mozilla Persona)
+* Add HTML forms in the email. Include a section for symtpoms and one for special events that day that might have triggered a symptom e.g. Yoga or Exam [more info here](http://css-tricks.com/html-forms-in-html-emails/)
