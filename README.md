@@ -28,3 +28,4 @@ TODO:
 * Add better email parsing (detect and ignore signatures)
 * Add a feedback page for users
 * Add a settings page
+* Add texting capability (to prompt user to submit symptoms)
