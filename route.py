@@ -145,7 +145,6 @@ def messages():
     signature = request.form.get('signature')
     sender = request.form.get('sender')
     recipient = request.form.get('recipient')
-    body_plain = request.form.get('body-plain', '')
     stripped_text = request.form.get('stripped-text', '')
     timestamp = request.form.get('timestamp') 
 

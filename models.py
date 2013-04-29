@@ -35,17 +35,17 @@ class User(object):
 
 
 class Email(object):
-    def __init__(self, date, sender, symptoms, body_plain):
+    def __init__(self, date, sender, symptoms, stripped_text):
         self.date = date
         self.sender = sender
-        self.body_plain=body_plain
+        self.stripped_text=stripped_text
         self.symptoms = symptoms
 
     def to_json(self):
         return {"date": self.date,
                 "sender": self.sender, 
                 "symptoms": self.symptoms, 
-                "body_plain": self.body_plain,
+                "stripped_text": self.stripped_text,
                 }
 
     @classmethod
@@ -61,7 +61,7 @@ class Email(object):
             raise EmailValidationError("invalid email address")
 
         return cls(date=date, sender=sender, symptoms=symptoms,
-                   body_plain=body_plain)
+                   stripped_text=stripped_text)
 
 
 class EmailValidationError(Exception):
