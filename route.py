@@ -25,7 +25,7 @@ facebook = oauth.remote_app('facebook',
     authorize_url='https://www.facebook.com/dialog/oauth',
     consumer_key= os.environ.get('CONSUMER_KEY'),
     consumer_secret=os.environ.get('CONSUMER_SECRET'),
-    request_token_params={'scope': ('email, '), 'auth_type': 'reauthenticate'}
+    request_token_params={'scope': ('email, ')}
 )
 
 def logged_in(f):
@@ -146,10 +146,11 @@ def messages():
     sender = request.form.get('sender')
     recipient = request.form.get('recipient')
     body_plain = request.form.get('body-plain', '')
+    stripped_text = request.form.get('stripped-text', '')
     timestamp = request.form.get('timestamp') 
 
     date = datetime.fromtimestamp(int(timestamp))  
-    e = Email.validate(date=date, sender=sender, body_plain=body_plain, symptoms=body_plain.splitlines())
+    e = Email.validate(date=date, sender=sender, body_plain=body_plain, symptoms=stripped_text.splitlines())
     mongo.save_email(e)
 
     return "OK"
