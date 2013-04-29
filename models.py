@@ -49,13 +49,13 @@ class Email(object):
                 }
 
     @classmethod
-    def validate(cls, date, sender, symptoms, body_plain):
+    def validate(cls, date, sender, symptoms, stripped_text):
         """
         TODO: ADD DOCSTRINGS
         """
         if type(date) != datetime.datetime:
             raise EmailValidationError("date is not of type datetime")
-        elif body_plain.splitlines() != symptoms:
+        elif stripped_text.splitlines() != symptoms:
             raise EmailValidationError("list of symptoms not as in email sent")
         elif not re.match(r"[^@]+@[^@]+\.[^@]+", sender): 
             raise EmailValidationError("invalid email address")
