@@ -11,12 +11,23 @@ To run on localhost:
 
     python route.py
 
-To send a dummy_email with your symptoms:
+The following environment variables need to be set:
 
-    python dummy_email.py
+* API_SECRET_KEY
+* CONSUMER_KEY
+* CONSUMER_SECRET
+* MAILGUN_APIKEY
+* MAILGUN_LOGIN
+* MAILGUN_PASSWORD
+* MAILGUN_USERNAME
+* SECRET
     
 
 TODO:
 
 * Add better email parsing (detect and ignore signatures)
-* Send daily email through Heroku Scheduler 
+* Feedback page for users
+* Settings page
+* Graphs and analytics when looking up symptoms
+* Texting capability (to prompt user to submit symptoms)
+* Alternative authentication method (either OpenID or Mozilla Persona)
