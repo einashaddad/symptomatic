@@ -25,7 +25,6 @@ The following environment variables need to be set:
 
 TODO:
 
-* Add better email parsing (detect and ignore signatures)
 * Feedback page for users
 * Settings page
 * Graphs and analytics when looking up symptoms
