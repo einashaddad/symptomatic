@@ -11,7 +11,7 @@ To run on localhost:
 
     python route.py
 
-The following environment variables need to be set:
+The following environment variables need to be set (ask me for a launsher shell script):
 
 * API_SECRET_KEY
 * CONSUMER_KEY
