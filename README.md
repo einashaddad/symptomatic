@@ -26,6 +26,7 @@ The following environment variables need to be set:
 TODO:
 
 * Add better email parsing (detect and ignore signatures)
-* Add a feedback page for users
-* Add a settings page
-* Add texting capability (to prompt user to submit symptoms)
+* Feedback page for users
+* Settings page
+* Texting capability (to prompt user to submit symptoms)
+* Alternative authentication method (either OpenID or Mozilla Persona)
