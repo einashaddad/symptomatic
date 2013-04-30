@@ -54,7 +54,7 @@ def send_verification(u, token):
                     We're almost ready to activate your account. We just need you to \
                     verify your email address.<br><br>\
                     Please click on the following link to verify:\
-                    http://shrouded-tundra-4968.herokuapp.com/verify?email=%s&token=%s\
+                    http://symptoms.herokuapp.com/verify?email=%s&token=%s\
                     <br><br>- The Symptomatic Team</h4></html>" % (u.first_name, u.email, token) }
             )
 

@@ -19,7 +19,7 @@ def create_route():
         data=MultiDict([("priority", 1),
                         ("description", "email route"),
                         ("expression", "match_recipient('')"),
-                        ("action", "forward('http://shrouded-tundra-4968.herokuapp.com/messages')"),
+                        ("action", "forward('http://symptoms.herokuapp.com/messages')"),
                         ("action", "stop()")]))
 
 create_route()
