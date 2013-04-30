@@ -42,7 +42,7 @@
       <div class="alert alert-error">
         <strong>Error! </strong>{{ message }}
       </div>
-      
+
       {% elif category == "success" %}
       <div class="alert alert-success">
         {{ message }}
@@ -63,6 +63,10 @@
   <div class="footer">
     <p>Made with <i class="icon-heart"></i> by <a href="https://github.com/einashaddad">einas</a> at <a href="http://www.hackerschool.com">hackerschool</a></p>
   </div>
+  <script src="{{ url_for('static', filename='js/d3.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/jquery-1.9.1.min.js') }}"></script>
+  <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+  {% block scripts %}{% endblock %}
 </body>
 </html>
 

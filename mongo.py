@@ -54,7 +54,10 @@ def find_symptoms_count(filter={}):
     Finds the entry according to the sender (the person logged in),
     the start date and the end date
     """
-    query = { 'sender': filter['sender'] }
+    query = {}
+
+    if 'sender' in filter:
+        query['sender'] = filter['sender']
 
     if 'start_date' in filter:
         if 'date' not in query: query['date'] = {}
@@ -68,7 +71,6 @@ def find_symptoms_count(filter={}):
     messages = db.email.find(query)
     result = Counter(symptom for message in messages for symptom in message['symptoms'])
     return [(str(s), result[s]) for s in result]
-
 
 def check_user(fb_email):
     """

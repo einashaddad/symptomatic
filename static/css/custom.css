@@ -17,3 +17,14 @@
 .row {
 	padding-top: 30px;
 }
+
+.chart, .entries {
+  float: left;
+}
+
+
+/*/// D3 Chart Styles ///*/
+
+.arc path {
+  stroke: #fff;
+}

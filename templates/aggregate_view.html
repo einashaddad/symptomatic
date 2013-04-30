@@ -1,16 +1,26 @@
 {% extends "layout.html" %}
 {% block body %}
+<input type="hidden" name="start_date" value="{{ start_date if start_date != None }}">
+<input type="hidden" name="end_date" value="{{ end_date if end_date != None }}">
 
 {% if start_date and end_date %}
-<h3>Your symptoms between {{ start_date }} and {{ end_date }}:</h3>
+  <h3>Your symptoms between {{ start_date }} and {{ end_date }}:</h3>
 {% endif %}
 
 {% if symptoms %}
-<ul class=entries>
-{% for symptom in symptoms %}
-	<li><h4>{{ symptom[0] }} - {{ symptom[1] }}%</h4>
-{% endfor %}
-</u1>
+
+  <div class="chart clearfix"></div>
+
+  <ul class="entries clearfix">
+  {% for symptom in symptoms %}
+  	<li><h4>{{ symptom[0] }} - {{ symptom[1] }}%</h4>
+  {% endfor %}
+  </u1>
 {% endif %}
 
+{% endblock %}
+
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/aggregatePieChart.js') }}"></script>
 {% endblock %}
