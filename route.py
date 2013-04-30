@@ -12,7 +12,7 @@ import hashlib, hmac
 import sha3
 
 
-app = Flask(__name__) 
+app = Flask(__name__)
 app.secret_key = os.environ.get('API_SECRET_KEY')
 secret = os.environ.get('SECRET')
 
@@ -48,8 +48,8 @@ def index():
 
 @app.route('/login')
 def login():
-    return facebook.authorize(callback=url_for('oauth_authorized', 
-            next=request.args.get('next') or request.referrer or None, 
+    return facebook.authorize(callback=url_for('oauth_authorized',
+            next=request.args.get('next') or request.referrer or None,
             _external=True))
 
 @app.route('/oauth-authorized')
@@ -62,7 +62,7 @@ def oauth_authorized(resp):
 
     session['logged_in'] = True
     session['facebook_token'] = (resp['access_token'], '')
-    
+
     data = facebook.get('/me').data
     print data
     fb_email = data.get('email')
@@ -73,7 +73,7 @@ def oauth_authorized(resp):
     if email:
         session['email'] = email
         return redirect('/find_symptoms')
-    
+
     return redirect('/sign_up')
 
 @app.route('/sign_up', methods=['GET', 'POST'])
@@ -93,7 +93,7 @@ def sign_up():
 
         u = User(first_name=first_name, last_name=last_name, fb_email=fb_email,email=email)
 
-        if not mongo.check_user(u.fb_email):  
+        if not mongo.check_user(u.fb_email):
             s = hashlib.sha3_512()
             s.update((secret+u.email).encode('utf-8'))
             token = s.hexdigest()
@@ -111,7 +111,7 @@ def sign_up():
 @app.route('/verify', methods=['GET'])
 def verify_token():
     email = request.args.get('email', '')
-    token = request.args.get('token', '') 
+    token = request.args.get('token', '')
 
     user = mongo.verified(email)
 
@@ -137,7 +137,7 @@ def logout():
     session.pop('logged_in', None)
     session.pop('facebook_token', None)
     session.pop('email', None)
-    return redirect(url_for('index')) #request.referrer or 
+    return redirect(url_for('index')) #request.referrer or
 
 @app.route('/messages', methods=['POST'])
 def messages():
@@ -148,16 +148,17 @@ def messages():
     sender = request.form.get('sender')
     recipient = request.form.get('recipient')
     stripped_text = request.form.get('stripped-text', '')
-    timestamp = request.form.get('timestamp') 
+    timestamp = request.form.get('timestamp')
 
-    if _verify(api_key=api_key, token=token, timestamp=timestamp, signature=signature):    
+    verified = _verify(api_key=api_key, token=token, timestamp=timestamp, signature=signature)
+    if app.debug or verified:
         if sender != "symptomatic@symptomatic.mailgun.org":
-            date = datetime.fromtimestamp(int(timestamp))  
+            date = datetime.fromtimestamp(int(timestamp))
             e = Email.validate(date=date, sender=sender, stripped_text=stripped_text, symptoms=stripped_text.splitlines())
             mongo.save_email(e)
             return "OK"
 
-    return "Nope", 404   
+        return "Nope", 404
 
 @app.route('/find_symptoms')
 @logged_in
@@ -185,9 +186,9 @@ def show_symptoms():
 
     #converts date into datetime object to be able to compare
     start_datetime = datetime.strptime(start_date, "%Y-%m-%d")
-    end_datetime = datetime.strptime(end_date, "%Y-%m-%d")            
+    end_datetime = datetime.strptime(end_date, "%Y-%m-%d")
 
-    symptoms = mongo.find_symptoms(email, start_datetime, end_datetime)     
+    symptoms = mongo.find_symptoms(email, start_datetime, end_datetime)
 
     if more_than_week(start_datetime, end_datetime):
         return render_template('aggregate_view.html', start_date=start_date, end_date=end_date, symptoms=symptoms)
@@ -213,4 +214,4 @@ def _verify(api_key, token, timestamp, signature):
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 58733))
     app.run(debug=True, host='0.0.0.0', port=port)
-    
+
