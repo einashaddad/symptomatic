@@ -9,13 +9,15 @@
 
 {% if symptoms %}
 
-  <div class="chart clearfix"></div>
+<div class="clearfix chart-container">
+  <div class="chart"></div>
 
-  <ul class="entries clearfix">
+  <ul class="entries">
   {% for symptom in symptoms %}
   	<li><h4>{{ symptom[0] }} - {{ symptom[1] }}%</h4>
   {% endfor %}
   </u1>
+</div>
 {% endif %}
 
 {% endblock %}

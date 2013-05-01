@@ -22,6 +22,10 @@
   float: left;
 }
 
+.chart-container {
+	width: 800px;
+	margin: 0 auto;
+}
 
 /*/// D3 Chart Styles ///*/
 
