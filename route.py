@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-from flask import Flask, render_template, request, url_for, redirect, session, flash, abort
+from flask import Flask, render_template, request, url_for, redirect, session, flash, abort, jsonify
 from flask_oauth import OAuth
 from models import User, Email
 from functools import wraps
@@ -172,6 +172,23 @@ def find_all():
     symptoms = mongo.find_all_symptoms(email)
 
     return render_template('aggregate_view.html', start_date=None, end_date=None, symptoms=symptoms)
+
+@app.route('/symptoms')
+@logged_in
+def symptons_json():
+    email = session['email']
+
+    filter = { "sender" : email }
+
+    start_date = request.args.get('start_date')
+    if start_date:
+        filter['start_date'] = datetime.strptime(start_date, "%Y-%m-%d")
+
+    end_date = request.args.get('end_date')
+    if end_date:
+        filter['end_date'] = datetime.strptime(end_date, "%Y-%m-%d")
+
+    return jsonify(mongo.find_symptoms_count(filter))
 
 @app.route('/show_symptoms')
 @logged_in
