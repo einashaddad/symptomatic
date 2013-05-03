@@ -31,4 +31,4 @@ TODO:
 * Texting capability (to prompt user to submit symptoms)
 * Alternative authentication method (either OpenID or Mozilla Persona)
 * Add HTML forms in the email. Include a section for symtpoms and one for special events that day that might have triggered a symptom e.g. Yoga or Exam [more info here](http://css-tricks.com/html-forms-in-html-emails/)
-* Add smarter email parsing also an option to say right arm/left leg
+* Add smarter email parsing also an option to specify the location of pain/numbness
