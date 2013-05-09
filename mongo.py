@@ -106,3 +106,8 @@ def delete_verified(email):
     not_verified = db.not_verified
     db.not_verified.remove({ "email": email })
 
+def save_feedback(email, message):
+    feedback = db.feedback
+    document = { "email" : email, "message" : message }
+    feedback.insert(document)
+

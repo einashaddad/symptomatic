@@ -31,6 +31,13 @@
   margin: 0 auto;
 }
 
+textarea {
+  width: 540px;
+}
+
+.btn-primary {
+  background: #FFA500;
+}
 /*/// D3 Chart Styles ///*/
 
 .arc path {

@@ -137,7 +137,22 @@ def logout():
     session.pop('logged_in', None)
     session.pop('facebook_token', None)
     session.pop('email', None)
-    return redirect(url_for('index')) #request.referrer or
+    return redirect(url_for('index'))
+
+@app.route('/feedback')
+@logged_in
+def feedback():
+    return render_template('feedback.html')
+    
+@app.route('/get_feedback')
+@logged_in
+def get_feedback():
+    email = session['email']
+    feedback = request.args['feedback']
+    mongo.save_feedback(email=email, message=feedback)
+    flash('We appreciate your feedback! Thanks for using Symptomatic!')
+    return redirect('/')
+
 
 @app.route('/messages', methods=['POST'])
 def messages():
@@ -173,23 +188,6 @@ def find_all():
 
     return render_template('aggregate_view.html', start_date=None, end_date=None, symptoms=symptoms)
 
-@app.route('/symptoms')
-@logged_in
-def symptons_json():
-    email = session['email']
-
-    filter = { "sender" : email }
-
-    start_date = request.args.get('start_date')
-    if start_date:
-        filter['start_date'] = datetime.strptime(start_date, "%Y-%m-%d")
-
-    end_date = request.args.get('end_date')
-    if end_date:
-        filter['end_date'] = datetime.strptime(end_date, "%Y-%m-%d")
-
-    return jsonify(mongo.find_symptoms_count(filter))
-
 @app.route('/show_symptoms')
 @logged_in
 def show_symptoms():
@@ -220,6 +218,24 @@ def more_than_week(d1, d2):
     if difference >= 7:
         return True
     return False
+
+@app.route('/symptoms')
+@logged_in
+def symptons_json():
+    email = session['email']
+
+    filter = { "sender" : email }
+
+    start_date = request.args.get('start_date')
+    if start_date:
+        filter['start_date'] = datetime.strptime(start_date, "%Y-%m-%d")
+
+    end_date = request.args.get('end_date')
+    if end_date:
+        filter['end_date'] = datetime.strptime(end_date, "%Y-%m-%d")
+
+    return jsonify(mongo.find_symptoms_count(filter))
+
 
 # This chunk was taken from the MailGun Docs
 def _verify(api_key, token, timestamp, signature):
