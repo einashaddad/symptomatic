@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="container">
+  <div class="well span6 offset3">
+    <form name="input" action="/get_feedback" method="get">
+        <p class="lead">If you have any comments, complaints or suggestions we'd love to hear them!</p>
+        <textarea align="center" rows="3" name="feedback"></textarea>
+          <div align="center">
+          <button class="btn btn-large btn-primary" type="submit" name="Submit">Submit</button>
+       </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}
