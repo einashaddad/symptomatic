@@ -64,9 +64,7 @@ def oauth_authorized(resp):
     session['facebook_token'] = (resp['access_token'], '')
 
     data = facebook.get('/me').data
-    print data
     fb_email = data.get('email')
-    print fb_email
 
     email = mongo.check_user(fb_email)
 
