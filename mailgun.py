@@ -22,9 +22,11 @@ def daily_email():
         data={"from": "Symptomatic <symptomatic@symptomatic.mailgun.org>",
                 "to": "users@symptomatic.mailgun.org",
                 "subject": "How are you feeling today?",
-                "html": "<html><h4>Hi %recipient_fname%,<br><br>\
-                Please take a minute to write out any symptoms you are feeling today.\
-                <br><br>Sincerely,<br>The Symptomatic Team</h4></html>"},
+                "html": "<html><h4><p>Hi %recipient_fname%,</p>\
+                <p>Please take a minute to write out any symptoms you are feeling today.</p>\
+                Sincerely,<br>The Symptomatic Team</p></h4>\
+                <p>If you wish to unsubscribe from this email, \
+                click %mailing_list_unsubscribe_url%.</p></html>"},
                 )
 
 def create_mailing_list():
