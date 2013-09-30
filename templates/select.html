@@ -4,14 +4,27 @@
   <div class="well span6 offset3">
     <form name="input" action="/show_symptoms" method="get">
         <p class="lead">For specific dates:</p>
-        <p class="lead">start date: <input type="date" name="start_date"/></p>
-        <p class="lead">end date: <input type="date" name="end_date"/></p>
+          Dates:
+          <input type="text" id="input1" name="start_date" size="10">
+          <input type="text" id="input2" name="end_date" size="10">
+          <div id="from"></div>
+          <div id="to"></div>
+<!--         <p class="lead">start date: <input type="date" name="start_date"/></p>
+        <p class="lead">end date: <input type="date" name="end_date"/></p> -->
         <button class="btn btn-large btn-primary" type="submit" name="Submit">Submit</button>
     </form>
+
     <form name="input" action="/show_all" method="get">
         <button class="btn btn-large btn-primary" type="submit" value="Find All" name="Find All">Find all symptoms</button>
     </form>
   </div>
 </div>
 
+{% endblock %}
+
+{% block scripts %}
+  <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+
+  <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<script src="{{ url_for('static', filename='js/calendar.js') }}"></script>
 {% endblock %}

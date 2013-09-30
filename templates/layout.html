@@ -3,9 +3,12 @@
 
 <head>
   <title>Symptomatic</title>
-  <!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.css') }}"> -->
   <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/custom.css')}}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/datepicker.css')}}">
+  <script src="{{ url_for('static', filename='js/d3.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/jquery-1.9.1.min.js') }}"></script>
+  <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
 </head>
 
 <body>
@@ -65,9 +68,6 @@
   <div class="footer">
     <p>Made with <i class="icon-heart"></i> by <a href="https://github.com/einashaddad">einas</a> at <a href="http://www.hackerschool.com">hackerschool</a></p>
   </div>
-  <script src="{{ url_for('static', filename='js/d3.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/jquery-1.9.1.min.js') }}"></script>
-  <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
   {% block scripts %}{% endblock %}
 </body>
 </html>

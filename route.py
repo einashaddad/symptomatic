@@ -198,8 +198,8 @@ def show_symptoms():
         return render_template('select.html')
 
     #converts date into datetime object to be able to compare
-    start_datetime = datetime.strptime(start_date, "%Y-%m-%d")
-    end_datetime = datetime.strptime(end_date, "%Y-%m-%d")
+    start_datetime = datetime.strptime(start_date, "%m/%d/%Y")
+    end_datetime = datetime.strptime(end_date, "%m/%d/%Y")
 
     symptoms = mongo.find_symptoms(email, start_datetime, end_datetime)
 
