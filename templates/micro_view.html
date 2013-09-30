@@ -1,16 +1,22 @@
 {% extends "layout.html" %}
 {% block body %}
 
-{% if start_date and end_date %}
-<h3>Your symptoms between {{ start_date }} and {{ end_date }}:</h3>
-{% endif %}
+<div class="container">
+  <div class="well span6 offset3">
+    <center><h3> {{ start_date }} - {{ end_date }}:</h3></center>
 
-{% if symptoms %}
-<ul class=entries>
-{% for symptom in symptoms %}
-	<li><h4>{{ symptom[0] }}</h4>
-{% endfor %}
-</u1>
-{% endif %}
+    {% if symptoms %}
+    
+    <div class=entries>
+        {% for symptom in symptoms %}
+        	<p>{{ symptom[0] }}</p>
+        {% endfor %}
+    </div>
+
+    {% else %}
+    No symptoms!
+    {% endif %}
+  </div>
+</div>
 
 {% endblock %}

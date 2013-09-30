@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    $( "#from" ).datepicker({
+    $( "#datepicker" ).datepicker({
         onSelect: function(dateText, inst) {
                     var date1 = $.datepicker.parseDate($.datepicker._defaults.dateFormat, $("#input1").val());
                     var date2 = $.datepicker.parseDate($.datepicker._defaults.dateFormat, $("#input2").val());

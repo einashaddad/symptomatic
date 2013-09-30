@@ -226,11 +226,11 @@ def symptons_json():
 
     start_date = request.args.get('start_date')
     if start_date:
-        filter['start_date'] = datetime.strptime(start_date, "%Y-%m-%d")
+        filter['start_date'] = datetime.strptime(start_date, "%m/%d/%Y")
 
     end_date = request.args.get('end_date')
     if end_date:
-        filter['end_date'] = datetime.strptime(end_date, "%Y-%m-%d")
+        filter['end_date'] = datetime.strptime(end_date, "%m/%d/%Y")
 
     return jsonify(mongo.find_symptoms_count(filter))
 

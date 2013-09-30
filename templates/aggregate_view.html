@@ -3,23 +3,29 @@
 <input type="hidden" name="start_date" value="{{ start_date if start_date != None }}">
 <input type="hidden" name="end_date" value="{{ end_date if end_date != None }}">
 
-{% if start_date and end_date %}
-  <h3>Your symptoms between {{ start_date }} and {{ end_date }}:</h3>
-{% endif %}
+<div class="container">
+  <div class="well span7 offset2">
+    {% if start_date and end_date %}
+      <center><h3>{{ start_date }} - {{ end_date }}:</h3></center>
+    {% endif %}
 
-{% if symptoms %}
+    {% if symptoms %}
 
-<div class="clearfix chart-container">
-  <div class="chart"></div>
+    <div class="clearfix chart-container">
+      <div class="chart"></div>
 
-  <ul class="entries">
-  {% for symptom in symptoms %}
-  	<li><h4>{{ symptom[0] }} - {{ symptom[1] }}%</h4>
-  {% endfor %}
-  </u1>
+      <div class="entries">
+      {% for symptom in symptoms %}
+      	<p>{{ symptom[0] }}  {{ symptom[1] }}%</p>
+      {% endfor %}
+    </div>
+
+    {% else %}
+    No symptoms!
+    {% endif %}
+
+  </div>
 </div>
-{% endif %}
-
 {% endblock %}
 
 

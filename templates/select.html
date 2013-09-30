@@ -3,19 +3,15 @@
 <div class="container">
   <div class="well span6 offset3">
     <form name="input" action="/show_symptoms" method="get">
-        <p class="lead">For specific dates:</p>
-          Dates:
+        <p class="lead">Dates:
           <input type="text" id="input1" name="start_date" size="10">
           <input type="text" id="input2" name="end_date" size="10">
-          <div id="from"></div>
-          <div id="to"></div>
-<!--         <p class="lead">start date: <input type="date" name="start_date"/></p>
-        <p class="lead">end date: <input type="date" name="end_date"/></p> -->
-        <button class="btn btn-large btn-primary" type="submit" name="Submit">Submit</button>
+          <center><div id="datepicker"></div></p>
+        <button class="btn btn-large btn-primary" type="submit" name="Submit">Submit</button></center>
     </form>
 
     <form name="input" action="/show_all" method="get">
-        <button class="btn btn-large btn-primary" type="submit" value="Find All" name="Find All">Find all symptoms</button>
+        <button class="btn btn-large btn-primary" type="submit" value="Find All" name="Find All">Click For All Symptoms</button>
     </form>
   </div>
 </div>
